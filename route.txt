@@ -1,0 +1,71 @@
+
+  GET|HEAD        / ...................................................................................................................... home
+  GET|HEAD        api/articles ....................................................................... articles.index › ArticleController@index
+  POST            api/articles ....................................................................... articles.store › ArticleController@store
+  GET|HEAD        api/articles/{article} ............................................................... articles.show › ArticleController@show
+  PUT|PATCH       api/articles/{article} ........................................................... articles.update › ArticleController@update
+  DELETE          api/articles/{article} ......................................................... articles.destroy › ArticleController@destroy
+  GET|HEAD        api/cart ............................................................................................. CartController@getCart
+  POST            api/cart/add ............................................................................................. CartController@add
+  POST            api/cart/remove ....................................................................................... CartController@remove
+  POST            api/cart/update ....................................................................................... CartController@update
+  GET|HEAD        api/categories .................................................................. categories.index › CategoryController@index
+  POST            api/categories .................................................................. categories.store › CategoryController@store
+  GET|HEAD        api/categories/{category} ......................................................... categories.show › CategoryController@show
+  PUT|PATCH       api/categories/{category} ..................................................... categories.update › CategoryController@update
+  DELETE          api/categories/{category} ................................................... categories.destroy › CategoryController@destroy
+  POST            api/checkout ....................................................................................... OrderController@checkout
+  GET|HEAD        api/comments ....................................................................... comments.index › CommentController@index
+  POST            api/comments ....................................................................... comments.store › CommentController@store
+  GET|HEAD        api/comments/{comment} ............................................................... comments.show › CommentController@show
+  PUT|PATCH       api/comments/{comment} ........................................................... comments.update › CommentController@update
+  DELETE          api/comments/{comment} ......................................................... comments.destroy › CommentController@destroy
+  POST            api/login ......................................................................................... Auth\AuthController@login
+  POST            api/logout ....................................................................................... Auth\AuthController@logout
+  GET|HEAD        api/orders ............................................................................. orders.index › OrderController@index
+  GET|HEAD        api/orders/{order} ....................................................................... orders.show › OrderController@show
+  GET|HEAD        api/products ....................................................................... products.index › ProductController@index
+  POST            api/products ....................................................................... products.store › ProductController@store
+  GET|HEAD        api/products/{product} ............................................................... products.show › ProductController@show
+  PUT|PATCH       api/products/{product} ........................................................... products.update › ProductController@update
+  DELETE          api/products/{product} ......................................................... products.destroy › ProductController@destroy
+  POST            api/products/{product}/upload-image ........................................................... ProductController@uploadImage
+  POST            api/register ................................................................................... Auth\AuthController@register
+  GET|HEAD        api/reviews .......................................................................... reviews.index › ReviewController@index
+  POST            api/reviews .......................................................................... reviews.store › ReviewController@store
+  GET|HEAD        api/reviews/{review} ................................................................... reviews.show › ReviewController@show
+  PUT|PATCH       api/reviews/{review} ............................................................... reviews.update › ReviewController@update
+  DELETE          api/reviews/{review} ............................................................. reviews.destroy › ReviewController@destroy
+  GET|HEAD        api/user ........................................................................................... Auth\AuthController@user
+  GET|HEAD        api/users ................................................................................ users.index › UserController@index
+  GET|HEAD        api/users/{user} ........................................................................... users.show › UserController@show
+  PUT|PATCH       api/users/{user} ....................................................................... users.update › UserController@update
+  DELETE          api/users/{user} ..................................................................... users.destroy › UserController@destroy
+  GET|HEAD        confirm-password ................................................. password.confirm › Auth\ConfirmablePasswordController@show
+  POST            confirm-password ................................................................... Auth\ConfirmablePasswordController@store
+  GET|HEAD        dashboard ......................................................................................................... dashboard
+  POST            email/verification-notification ...................... verification.send › Auth\EmailVerificationNotificationController@store
+  GET|HEAD        forgot-password .................................................. password.request › Auth\PasswordResetLinkController@create
+  POST            forgot-password ..................................................... password.email › Auth\PasswordResetLinkController@store
+  GET|HEAD        login .................................................................... login › Auth\AuthenticatedSessionController@create
+  POST            login ............................................................................. Auth\AuthenticatedSessionController@store
+  POST            logout ................................................................. logout › Auth\AuthenticatedSessionController@destroy
+  GET|HEAD        register .................................................................... register › Auth\RegisteredUserController@create
+  POST            register ................................................................................ Auth\RegisteredUserController@store
+  POST            reset-password ............................................................ password.store › Auth\NewPasswordController@store
+  GET|HEAD        reset-password/{token} ................................................... password.reset › Auth\NewPasswordController@create
+  GET|HEAD        sanctum/csrf-cookie ....................................... sanctum.csrf-cookie › Laravel\Sanctum › CsrfCookieController@show
+  ANY             settings ............................................................................ Illuminate\Routing › RedirectController
+  GET|HEAD        settings/appearance .............................................................................................. appearance
+  GET|HEAD        settings/password .......................................................... password.edit › Settings\PasswordController@edit
+  PUT             settings/password ...................................................... password.update › Settings\PasswordController@update
+  GET|HEAD        settings/profile ............................................................. profile.edit › Settings\ProfileController@edit
+  PATCH           settings/profile ......................................................... profile.update › Settings\ProfileController@update
+  DELETE          settings/profile ....................................................... profile.destroy › Settings\ProfileController@destroy
+  GET|HEAD        storage/{path} ................................................................................................ storage.local
+  GET|HEAD        up .......................................................................................................................... 
+  GET|HEAD        verify-email ................................................... verification.notice › Auth\EmailVerificationPromptController
+  GET|HEAD        verify-email/{id}/{hash} ................................................... verification.verify › Auth\VerifyEmailController
+
+                                                                                                                            Showing [67] routes
+
