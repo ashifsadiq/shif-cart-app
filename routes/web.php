@@ -2,9 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-Route::get('/storage/{filenamePath}', function ($filenamePath) {
-    return response()->file(storage_path("/app/public/{$filenamePath}"));
-});
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');

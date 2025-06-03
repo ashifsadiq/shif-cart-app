@@ -1,5 +1,3 @@
-
-  GET|HEAD        / ...................................................................................................................... home
   GET|HEAD        api/articles ....................................................................... articles.index › ArticleController@index
   POST            api/articles ....................................................................... articles.store › ArticleController@store
   GET|HEAD        api/articles/{article} ............................................................... articles.show › ArticleController@show
@@ -41,31 +39,3 @@
   GET|HEAD        api/users/{user} ........................................................................... users.show › UserController@show
   PUT|PATCH       api/users/{user} ....................................................................... users.update › UserController@update
   DELETE          api/users/{user} ..................................................................... users.destroy › UserController@destroy
-  GET|HEAD        confirm-password ................................................. password.confirm › Auth\ConfirmablePasswordController@show
-  POST            confirm-password ................................................................... Auth\ConfirmablePasswordController@store
-  GET|HEAD        dashboard ......................................................................................................... dashboard
-  POST            email/verification-notification ...................... verification.send › Auth\EmailVerificationNotificationController@store
-  GET|HEAD        forgot-password .................................................. password.request › Auth\PasswordResetLinkController@create
-  POST            forgot-password ..................................................... password.email › Auth\PasswordResetLinkController@store
-  GET|HEAD        login .................................................................... login › Auth\AuthenticatedSessionController@create
-  POST            login ............................................................................. Auth\AuthenticatedSessionController@store
-  POST            logout ................................................................. logout › Auth\AuthenticatedSessionController@destroy
-  GET|HEAD        register .................................................................... register › Auth\RegisteredUserController@create
-  POST            register ................................................................................ Auth\RegisteredUserController@store
-  POST            reset-password ............................................................ password.store › Auth\NewPasswordController@store
-  GET|HEAD        reset-password/{token} ................................................... password.reset › Auth\NewPasswordController@create
-  GET|HEAD        sanctum/csrf-cookie ....................................... sanctum.csrf-cookie › Laravel\Sanctum › CsrfCookieController@show
-  ANY             settings ............................................................................ Illuminate\Routing › RedirectController
-  GET|HEAD        settings/appearance .............................................................................................. appearance
-  GET|HEAD        settings/password .......................................................... password.edit › Settings\PasswordController@edit
-  PUT             settings/password ...................................................... password.update › Settings\PasswordController@update
-  GET|HEAD        settings/profile ............................................................. profile.edit › Settings\ProfileController@edit
-  PATCH           settings/profile ......................................................... profile.update › Settings\ProfileController@update
-  DELETE          settings/profile ....................................................... profile.destroy › Settings\ProfileController@destroy
-  GET|HEAD        storage/{path} ................................................................................................ storage.local
-  GET|HEAD        up .......................................................................................................................... 
-  GET|HEAD        verify-email ................................................... verification.notice › Auth\EmailVerificationPromptController
-  GET|HEAD        verify-email/{id}/{hash} ................................................... verification.verify › Auth\VerifyEmailController
-
-                                                                                                                            Showing [67] routes
-
