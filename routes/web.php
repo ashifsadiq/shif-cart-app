@@ -8,6 +8,8 @@ Route::get('/', function () {
 
 Route::inertia('privacy-policy','Policy/PrivacyPolicy');
 Route::inertia('terms-conditions','Policy/TermsConditions');
+Route::inertia('ShiftCartFeedbackForm','Forms/ShiftCartFeedbackForm');
+
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
