@@ -6,6 +6,10 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+Route::inertia('privacy-policy','Policy/PrivacyPolicy');
+Route::inertia('terms-conditions','Policy/TermsConditions');
+
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
