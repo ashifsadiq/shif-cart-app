@@ -1,0 +1,1 @@
+import{j as t,$ as a}from"./app-B5nWgCIr.js";const x=({links:r})=>{if(r.length>3)return t.jsx("div",{className:"flex gap-x-2",children:r.map((e,o)=>t.jsx(a,{href:e.url,dangerouslySetInnerHTML:{__html:e.label},className:`rounded border px-2 py-1 text-sm font-medium ${e.active?"bg-muted-foreground text-white":"bg-gray-200 text-gray-700 hover:bg-gray-300"}`}))})};export{x as P};
