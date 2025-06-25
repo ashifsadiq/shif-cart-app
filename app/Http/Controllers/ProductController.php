@@ -7,6 +7,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class ProductController extends Controller
 {
@@ -31,7 +32,12 @@ class ProductController extends Controller
             $products->orderBy($sortBy, $sortOrder);
         }
 
-        return ProductResource::collection($products->paginate(10));
+        return ProductResource::collection($products->paginate(12));
+    }
+    public function adminIndex(Request $request){
+        return Inertia::render('admin/products/Products',[
+            'products'=> $this->index($request)
+        ]);
     }
 
     public function store(ProductStoreRequest $request)
