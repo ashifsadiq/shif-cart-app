@@ -34,9 +34,13 @@ class ProductController extends Controller
 
         return ProductResource::collection($products->paginate(12));
     }
-    public function adminIndex(Request $request){
-        return Inertia::render('admin/products/Products',[
-            'products'=> $this->index($request)
+    public function adminIndex(Request $request)
+    {
+        $CategoryController = new CategoryController;
+        $category = $CategoryController->index($request);
+        return Inertia::render('admin/products/Products', [
+            'products' => $this->index($request),
+            'category' => $category
         ]);
     }
 

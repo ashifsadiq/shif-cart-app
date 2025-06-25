@@ -10,10 +10,16 @@ type ProductsProps = {
         links?: any;
         meta?: any;
     };
+    category: {
+        data: Array<any>;
+        links?: any;
+        meta?: any;
+    };
 };
 
 const Products = (props: ProductsProps) => {
     const { data, links, meta } = props.products;
+    const { data: categoryData, links: categoryLinks, meta: categoryMeta } = props.category;
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Products',
