@@ -1,4 +1,4 @@
-import{c as r,A as l}from"./app-logo-icon-IGqCpvCA.js";import{j as e,$ as n}from"./app-B5nWgCIr.js";/**
+import{c as r,A as l}from"./app-logo-icon-6AisLsRe.js";import{j as e,$ as n}from"./app-C1vhNkYc.js";/**
  * @license lucide-react v0.475.0 - ISC
  *
  * This source code is licensed under the ISC license.
