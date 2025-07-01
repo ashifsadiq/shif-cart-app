@@ -8,11 +8,11 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         return Category::paginate();
     }
-    public function show(Request $request, $slug)
+    public function show($slug)
     {
         $category = Category::where("slug", $slug)->firstOrFail();
         $products = Product::where("category_id", $category->id);
