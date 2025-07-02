@@ -9,6 +9,7 @@ type Product = {
     price: number;
     stock_quantity: number;
     image: string;
+    image_url: string;
     is_featured: boolean;
     created_at: string;
     updated_at: string;
@@ -26,7 +27,7 @@ const ProductComponent: React.FC<Props> = ({ productData }) => {
                     className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
                 >
                     <img
-                        src={`/storage/${product.image}`}
+                        src={product.image ? `/storage/${product.image}` : product.image_url}
                         alt={product.name}
                         className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
@@ -39,7 +40,9 @@ const ProductComponent: React.FC<Props> = ({ productData }) => {
 
                         <div className="mt-4 flex items-center justify-between">
                             <span className="text-primary text-base font-bold">₹{product.price?.toFixed(2) ?? 'N/A'}</span>
-                            <button className="bg-primary hover:bg-primary/90 rounded-lg px-5 py-1 text-sm text-white transition-colors cursor-pointer">View</button>
+                            <button className="bg-primary hover:bg-primary/90 cursor-pointer rounded-lg px-5 py-1 text-sm text-white transition-colors">
+                                View
+                            </button>
                         </div>
                     </div>
                 </div>
