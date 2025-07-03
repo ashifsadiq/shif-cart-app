@@ -12,12 +12,11 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        $catCount           = fake()->numberBetween(5, 20);
-        $productPerCategory = fake()->numberBetween(10, 20);
-
-        $this->command->info("Starting seeding with $catCount categories, each with $productPerCategory products.");
+        $catCount = fake()->numberBetween(1, 10);
 
         for ($i = 1; $i <= $catCount; $i++) {
+            $productPerCategory = fake()->numberBetween(1, 10);
+            $this->command->warn("Starting seeding with $catCount categories, each with $productPerCategory products.");
             $this->command->info("Creating category $i/$catCount... [" . ($catCount - $i) . " left]");
 
             $categoryImage = $this->fetchAndSaveImage('categories');
@@ -30,7 +29,9 @@ class ProductSeeder extends Seeder
             $this->command->info("→ Category created with image: $categoryImage");
 
             for ($j = 1; $j <= $productPerCategory; $j++) {
-                $this->command->info("   Creating product $j/$productPerCategory for category \"{$category->name}\"... [" . ($productPerCategory - $j) . " left]");
+                $mrp      = fake()->randomFloat(2, 100, 1000);
+                $price    = round($mrp * fake()->randomFloat(2, 0.5, 0.95), 2);
+                $this->command->info("   Creating product $j/$productPerCategory for category \"{$category->name}\"... [" . ($productPerCategory - $j) . "/$productPerCategory left ($i/$catCount category)]");
 
                 $productImage = $this->fetchAndSaveImage('products');
 
@@ -40,13 +41,14 @@ class ProductSeeder extends Seeder
                         'name'           => fake()->words(rand(2, 4), true),
                         'slug'           => Str::slug(fake()->words(rand(2, 4), true)) . '-' . rand(1000, 9999),
                         'description'    => fake()->paragraph(2),
-                        'price'          => fake()->randomFloat(2, 10, 1000),
+                        'price'          => $price,
+                        'mrp'            => $mrp,
                         'stock_quantity' => fake()->numberBetween(0, 50),
                         'image'          => $productImage,
                         'is_featured'    => fake()->boolean(),
                     ]);
 
-                    $this->command->info("   → Product created with image: $productImage");
+                    // $this->command->info("   → Product created with image: $productImage");
                 }
             }
         }
@@ -60,7 +62,7 @@ class ProductSeeder extends Seeder
      */
     private function fetchAndSaveImage(string $folder): ?string
     {
-        $imageUrl = 'https://picsum.photos/1080/1080';
+        $imageUrl = 'https://picsum.photos/100/100';
         try {
             $response = Http::get($imageUrl);
             if ($response->successful()) {

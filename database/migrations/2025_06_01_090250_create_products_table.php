@@ -18,9 +18,17 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
+            $table->decimal('mrp', 10, 2);
+            $table->decimal('rating', 2, 1)->nullable();
+            $table->integer('rating_count')->default(0);
             $table->integer('stock_quantity')->default(0);
             $table->string('image')->nullable(); // Path to product image
             $table->boolean('is_featured')->default(false);
+            $table->timestamp('available_from')->nullable();
+            $table->timestamp('available_to')->nullable();
+            $table->timestamp('discount_expires_at')->nullable();
+            $table->string('weight')->nullable();
+            $table->string('dimensions')->nullable();
             $table->timestamps();
         });
     }

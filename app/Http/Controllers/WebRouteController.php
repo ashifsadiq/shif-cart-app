@@ -22,4 +22,8 @@ class WebRouteController extends Controller
             'products'   => Product::paginate(50, ['*'], 'product_page', $productPage),
         ]);
     }
+    public function productShow(Request $request)
+    {
+        return Inertia::render('Product/ProductDetails');
+    }
 }

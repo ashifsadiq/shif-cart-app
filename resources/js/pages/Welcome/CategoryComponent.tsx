@@ -36,24 +36,44 @@ const CategoryComponent: React.FC<Props> = ({ categoryData, currentCategoryId, s
     };
 
     return (
-        <div ref={containerRef} className="scrollbar-hide w-full overflow-x-auto px-4 py-4">
+        <div ref={containerRef} className="scrollbar-hide w-full overflow-x-auto p-2 sm:p-6">
             <div className="flex gap-4 whitespace-nowrap">
-                {categoryData.map((cat) => (
-                    <button
-                        key={cat.id}
-                        ref={(el) => { itemRefs.current[cat.id] = el; }}
-                        onClick={() => handleClick(cat.id)}
-                        className={cn(
-                            'min-w-[200px] shrink-0 cursor-pointer rounded-xl border-2 bg-transparent p-4 shadow transition-all hover:shadow-lg dark:bg-[#FDFDFC]',
-                            currentCategoryId === cat.id ? 'border-primary dark:border-muted-foreground border-2' : '',
-                        )}
-                    >
-                        <img src={`/storage/${cat.image}`} alt={cat.name} className="mb-2 h-24 w-full rounded object-cover" />
-                        <h2 className="text-lg font-semibold">
-                            {cat.name} - {cat.id}
-                        </h2>
-                    </button>
-                ))}
+                {categoryData.map((cat) => {
+                    const isCurrentCategoryId = currentCategoryId === cat.id;
+                    const scale = 'scale-102';
+                    const activeScale = 'scale-105';
+                    const imageWidth = 'w-10';
+                    return (
+                        <button
+                            key={cat.id}
+                            ref={(el) => {
+                                itemRefs.current[cat.id] = el;
+                            }}
+                            onClick={() => handleClick(cat.id)}
+                            className={cn(
+                                'bg-background flex min-w-fit shrink-0 cursor-pointer flex-row items-center justify-between gap-x-2 rounded-xl transition-all sm:flex-col group',
+                            )}
+                        >
+                            <img
+                                src={`/storage/${cat.image}`}
+                                alt={cat.name}
+                                className={cn(
+                                    `h-10 ${imageWidth} rounded-full object-cover transition-transform md:mb-2 md:h-24 md:w-24 group-hover:${activeScale}`,
+                                    isCurrentCategoryId ? activeScale : '',
+                                )}
+                            />
+                            <h2
+                                className={cn(
+                                    `text-muted-foreground text-base font-semibold transition-transform`,
+                                    isCurrentCategoryId ? 'text-card-foreground' : '',
+                                    isCurrentCategoryId ? activeScale : '',
+                                )}
+                            >
+                                {cat.name}
+                            </h2>
+                        </button>
+                    );
+                })}
             </div>
         </div>
     );

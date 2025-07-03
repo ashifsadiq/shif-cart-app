@@ -6,11 +6,10 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [WebRouteController::class, 'index'])->name('home');
+Route::get('/product/{slug}', [WebRouteController::class, 'productShow'])->name('product.productShow');
 Route::inertia('privacy-policy', 'Policy/PrivacyPolicy');
 Route::inertia('terms-conditions', 'Policy/TermsConditions');
 Route::inertia('ShiftCartFeedbackForm', 'Forms/ShiftCartFeedbackForm');
-// 004CFF
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
