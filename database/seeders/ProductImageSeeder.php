@@ -12,7 +12,7 @@ class ProductImageSeeder extends Seeder
 {
     private function fetchAndSaveImage(string $folder): ?string
     {
-        $imageUrl = 'https://picsum.photos/100/100';
+        $imageUrl = 'https://picsum.photos/1080/1080';
 
         try {
             $response = Http::get($imageUrl);
