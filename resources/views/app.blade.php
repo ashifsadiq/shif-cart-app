@@ -57,6 +57,13 @@
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
+        @if(count($schemas))
+            @foreach($schemas as $schema)
+                <script type="application/ld+json">
+                    {{ json_encode($schema) }}
+                </script>
+            @endforeach
+        @endif
         @inertia
     </body>
 </html>

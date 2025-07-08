@@ -49,16 +49,41 @@ class WebRouteController extends Controller
             ->orderBy('created_at', 'desc') // then by most recent
             ->get();
 
-        $reviews->transform(function ($review) {
+        $reviewsSchema = [];
+
+        $reviews->transform(function ($review) use (&$reviewsSchema) {
             $user = User::select('name', 'picture')->find($review->user_id);
 
+            $reviewSchema = [
+                "@type"         => "Review",
+                "datePublished" => $review->created_at->toDateString(), // use actual date
+                "name"          => $review->title,
+                "reviewBody"    => $review->comment,
+                "reviewRating"  => [
+                    "@type"       => "Rating",
+                    "bestRating"  => "5",
+                    "ratingValue" => $review->rating,
+                    "worstRating" => "1",
+                ],
+            ];
+
             if ($user) {
-                $user->picture = $user->picture ? asset("storage/{$user->picture}") : null;
-                $review->user  = $user;
+                $user->picture          = $user->picture ? asset("storage/{$user->picture}") : null;
+                $review->user           = $user;
+                $reviewSchema['author'] = $user->name;
             }
 
+            $reviewsSchema[] = $reviewSchema;
             return $review;
         });
+        $schema = [
+            "@context"    => "https://schema.org",
+            "@type"       => "Product",
+            "name"        => $product->name,
+            "image"       => $product->image,
+            "description" => $product->description,
+            "review"      => $reviewsSchema,
+        ];
 
         // $this->image ? asset("storage/{$this->image}") : null
         return Inertia::render('Product/ProductDetails', [
@@ -66,6 +91,8 @@ class WebRouteController extends Controller
             'category'      => $category,
             'productImages' => $productImages,
             'reviews'       => $reviews,
-        ]);
+        ])->withViewData(['schemas' => [
+            $schema,
+        ]]);
     }
 }
