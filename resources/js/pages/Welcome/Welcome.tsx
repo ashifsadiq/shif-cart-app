@@ -1,16 +1,18 @@
 import UserLayout from '@/layouts/user-layout';
-import { type SharedData } from '@/types';
-import { router, usePage } from '@inertiajs/react';
+import { CategoryPagination, ProductPagination } from '@/types/product';
+import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CategoryComponent from './CategoryComponent';
+import HeaderCarousel from './HeaderCarousel';
 import ProductsComponent from './ProductsComponent';
 
-export default function Welcome(props: SharedData) {
-    const { categories, products } = usePage().props as unknown as {
-        products: SharedData;
-        categories: SharedData;
-    };
+type Props = {
+    categories: CategoryPagination;
+    products: ProductPagination;
+};
+export default function Welcome(props: Props) {
+    const { categories, products } = props;
     const [productsData, setProductsData] = useState({ ...products });
     const [currentCategoryId, setCurrentCategoryId] = useState<number | null>(null);
     const [isProductLoading, setIsProductLoading] = useState(!false);
@@ -67,6 +69,7 @@ export default function Welcome(props: SharedData) {
     // Object.keys
     return (
         <UserLayout title="Welcome" description="Welcome to our online store! Explore a wide range of products and categories.">
+            <HeaderCarousel />
             <CategoryComponent currentCategoryId={currentCategoryId} setCurrentCategoryId={handleCategoryChange} categoryData={categories.data} />
             <ProductsComponent productData={productsData.data} />
         </UserLayout>

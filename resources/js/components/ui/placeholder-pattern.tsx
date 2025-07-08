@@ -1,7 +1,7 @@
-import { useId } from 'react';
+import { HTMLProps, useId } from 'react';
 
 interface PlaceholderPatternProps {
-    className?: string;
+    className?: HTMLProps<HTMLElement>['className'];
 }
 
 export function PlaceholderPattern({ className }: PlaceholderPatternProps) {

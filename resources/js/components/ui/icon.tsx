@@ -1,8 +1,9 @@
 import { LucideIcon } from 'lucide-react';
+import { HTMLProps } from 'react';
 
 interface IconProps {
     iconNode?: LucideIcon | null;
-    className?: string;
+    className?: HTMLProps<HTMLElement>['className'];
 }
 
 export function Icon({ iconNode: IconComponent, className }: IconProps) {

@@ -14,19 +14,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-
-        User::factory()->create([
-            'name'  => 'Test User',
-            'email' => 'test@example.com',
-        ]);
         // Clean product and category image folders
-        Storage::disk('public')->deleteDirectory('products');
-        Storage::disk('public')->deleteDirectory('categories');
         $this->call([
+            UserSeeder::class,
             RoleSeeder::class,
             AdminUserSeeder::class,
             ProductSeeder::class,
-            ProductImageSeeder::class,
+            // ProductImageSeeder::class,
+        ]);
+        User::factory()->create([
+            'name'  => 'Test User',
+            'email' => 'test@example.com',
         ]);
     }
 }

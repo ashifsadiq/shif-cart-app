@@ -52,7 +52,6 @@ class ProductImageSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         // Make sure storage directory exists
-        Storage::disk('public')->makeDirectory('products');
 
         $products = Product::all();
 
@@ -67,7 +66,7 @@ class ProductImageSeeder extends Seeder
                 if ($filePath) {
                     ProductImage::create([
                         'product_id' => $product->id,
-                        'image_path' => $filePath,
+                        'image' => $filePath,
                         'position'   => $i,
                     ]);
                 }

@@ -1,20 +1,6 @@
+import { Product } from '@/types/product';
 import { Link } from '@inertiajs/react';
 import React from 'react';
-
-type Product = {
-    id: number;
-    category_id: number;
-    name: string;
-    slug: string;
-    description: string;
-    price: number;
-    stock_quantity: number;
-    image: string;
-    image_url: string;
-    is_featured: boolean;
-    created_at: string;
-    updated_at: string;
-};
 type Props = {
     productData: Product[];
 };
@@ -29,7 +15,7 @@ const ProductComponent: React.FC<Props> = ({ productData }) => {
                     className="group bg-background relative flex flex-col justify-between overflow-hidden rounded border border-gray-200 shadow-sm transition-all hover:scale-101 hover:cursor-pointer hover:shadow-lg sm:rounded-2xl"
                 >
                     <img
-                        src={product.image ? `/storage/${product.image}` : product.image_url}
+                        src={product.image}
                         alt={product.name}
                         className="md:6 h-56 w-full object-cover transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-102 lg:h-[400px]"
                     />
