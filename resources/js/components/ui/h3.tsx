@@ -12,7 +12,7 @@ const H3 = ({
   ...props
 }:H2Props) => {
   return (
-    <h1 {...props} className={cn(className)}>{children}</h1>
+    <h3 {...props} className={cn(className)}>{children}</h3>
   )
 }
 

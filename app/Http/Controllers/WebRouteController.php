@@ -7,6 +7,7 @@ use App\Models\ProductImage;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class WebRouteController extends Controller
@@ -76,6 +77,25 @@ class WebRouteController extends Controller
             $reviewsSchema[] = $reviewSchema;
             return $review;
         });
+        $MetaTags = [
+            // Basic SEO
+            '<title>Buy ' . $product->name . ' at Best Price | ' . config('app.name') . '</title>',
+            '<meta name="description" content="' . Str::limit($product->description, 150) . '">',
+            '<link rel="canonical" href="' . url()->current() . '">',
+            // Open Graph Tags
+            '<meta property="og:type" content="product">',
+            '<meta property="og:title" content="Buy ' . $product->name . ' | ' . config('app.name') . '">',
+            '<meta property="og:description" content="' . Str::limit($product->description, 150) . '">',
+            '<meta property="og:url" content="' . url()->current() . '">',
+            '<meta property="og:image" content="' . asset('storage/' . $product->image) . '">',
+            '<meta property="og:site_name" content="' . config('app.name') . '">',
+
+            // Twitter Card Tags
+            '<meta name="twitter:card" content="summary_large_image">',
+            '<meta name="twitter:title" content="Buy ' . $product->name . '">',
+            '<meta name="twitter:description" content="' . Str::limit($product->description, 150) . '">',
+            '<meta name="twitter:image" content="' . asset('storage/' . $product->image) . '">',
+        ];
         $schema = [
             "@context"    => "https://schema.org",
             "@type"       => "Product",
@@ -91,8 +111,11 @@ class WebRouteController extends Controller
             'category'      => $category,
             'productImages' => $productImages,
             'reviews'       => $reviews,
-        ])->withViewData(['schemas' => [
-            $schema,
-        ]]);
+        ])->withViewData([
+            'schemas'  => [
+                $schema,
+            ],
+            'metaTags' => $MetaTags,
+        ]);
     }
 }
