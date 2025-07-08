@@ -10,9 +10,9 @@ type Props = {
 };
 const ProductReviews = ({ reviews, className }: Props) => {
     return (
-        <div className={cn('', className)}>
+        <div itemProp="review" itemScope itemType="https://schema.org/Review" className={cn('space-y-2', className)}>
             <H2>Top Reviews</H2>
-            <div className="mx-auto grid grid-cols-1 gap-3 p-1 md:grid-cols-3 md:p-4 lg:grid-cols-4">
+            <div className="mx-auto grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-4">
                 {reviews.map((review) => (
                     <UserReviews className='border-2 p-3 rounded-2xl shadow' review={review} />
                 ))}

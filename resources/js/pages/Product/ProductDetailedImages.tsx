@@ -27,7 +27,7 @@ const ProductDetailedImages = ({ productImages }: ProductDetailedImages) => {
     };
     return (
         <div className="space-y-3">
-            <img src={`${allProductImages[activeImageIndex]}`} alt={`Product Image `} className={cn('h-auto w-full rounded-lg object-cover')} />
+            <img itemProp="image" src={`${allProductImages[activeImageIndex]}`} alt={`Product Image `} className={cn('h-auto w-full rounded-lg object-cover')} />
             <div ref={imagesContainerRef} className="scrollbar-hide w-full overflow-x-auto">
                 <div className="flex gap-x-2 whitespace-nowrap">
                     {allProductImages.map((image, index) => (

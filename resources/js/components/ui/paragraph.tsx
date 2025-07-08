@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import React, { useEffect, useRef, useState, HTMLProps } from 'react';
 
-type ParagraphProps = {
+type ParagraphProps = React.HTMLAttributes<HTMLHeadingElement> & {
   children?: React.ReactNode;
   style?: React.CSSProperties;
   className?: HTMLProps<HTMLElement>['className'];

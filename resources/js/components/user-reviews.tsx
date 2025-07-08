@@ -25,14 +25,23 @@ const UserReviews = (props: Props) => {
                 {Array(5)
                     .fill(null)
                     .map((_, i) => (
-                        <Rating key={i} size={30} fillColor='#c45500' initialValue={i + 1 <= review.rating ? 1 : 0} readonly iconsCount={1} />
+                        <Rating key={i} size={30} fillColor="#c45500" initialValue={i + 1 <= review.rating ? 1 : 0} readonly iconsCount={1} />
                     ))}
-                <span className="text-sm text-gray-600">{review.rating}/5</span>
+                <meta itemProp="worstRating" content="1"/>
+                <span className="text-sm text-gray-600"><span itemProp="ratingValue">{review.rating}</span>/<span itemProp="bestRating">5</span></span>
             </div>
 
             {/* optional: title/comment */}
-            {review.title && <p className="mt-2 font-semibold">{review.title}</p>}
-            {review.comment && <p className="mt-1 text-sm text-muted-foreground">{review.comment}</p>}
+            {review.title && (
+                <p itemProp="name" className="mt-2 font-semibold">
+                    {review.title}
+                </p>
+            )}
+            {review.comment && (
+                <p itemProp="reviewBody" className="text-muted-foreground mt-1 text-sm">
+                    {review.comment}
+                </p>
+            )}
         </div>
     );
 };

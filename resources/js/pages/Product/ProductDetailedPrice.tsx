@@ -40,8 +40,12 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({ price, mrp })
 
                 {/* Current Price */}
                 <span className="text-4xl font-bold md:text-5xl">
-                    <span className="align-super text-2xl font-normal md:text-3xl">₹</span>
-                    {formatPrice(numericCurrentPrice)}
+                    <span className="align-super text-2xl font-normal md:text-3xl" itemProp="priceCurrency" content="INR">
+                        ₹
+                    </span>
+                    <span itemProp="price" content={numericCurrentPrice.toString()}>
+                        {formatPrice(numericCurrentPrice)}
+                    </span>
                 </span>
             </div>
 
@@ -49,7 +53,7 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({ price, mrp })
             {/* Only show MRP if it's higher than the current price */}
             {numericMrp > numericCurrentPrice && (
                 <div className="mb-1 text-sm md:text-base">
-                    M.R.P.:{' '}
+                    <span>M.R.P.:</span>
                     <span className="line-through">
                         <span className="font-normal">₹</span>
                         {formatPrice(numericMrp)}

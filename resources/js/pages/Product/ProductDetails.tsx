@@ -20,12 +20,12 @@ const ProductDetails = (props: Props) => {
         .fill(null)
         .flatMap(() => [product?.image, ...productImages.map((image: any) => image.image)]);
     return (
-        <UserLayout className={'py-10'} customTitle={product ? `${product?.name} ${appName} : ${category?.name}` : 'Product Details'}>
+        <UserLayout itemScope itemType="https://schema.org/Product" className={'py-10'} customTitle={product ? `${product?.name} ${appName} : ${category?.name}` : 'Product Details'}>
             <div className="mx-auto grid grid-cols-1 gap-3 p-1 md:p-4 lg:grid-cols-3">
                 <ProductDetailedImages productImages={allProductImages} />
                 <div className="col-span-2">
-                    <H1>{product?.name}</H1>
-                    <Paragraph lineClampEnable>{product?.description}</Paragraph>
+                    <H1 itemProp={"name"}>{product?.name}</H1>
+                    <Paragraph itemProp='description' lineClampEnable>{product?.description}</Paragraph>
                     <HorizontalRule />
                     <ProductDetailedPrice mrp={product?.mrp ?? ''} price={product?.price ?? ''} />
                 </div>
