@@ -17,8 +17,8 @@ class ProductSeeder extends Seeder
     {
         Storage::disk('public')->deleteDirectory('products');
         Storage::disk('public')->deleteDirectory('categories');
-        $maxCatCount                = 10;
-        $maxProductCountPerCategory = 15;
+        $maxCatCount                = 30;
+        $maxProductCountPerCategory = 45;
         $catCount                   = fake()->numberBetween(1, $maxCatCount);
         $productPerCategory         = null;
         for ($i = 1; $i <= $catCount; $i++) {
