@@ -32,7 +32,6 @@ const ProductDetails = (props: Props) => {
                 <div></div>
             </div>
             <ProductReviews className='p-1 md:p-4' reviews={reviews} />
-            <PropsViewer props={reviews} />
         </UserLayout>
     );
 };

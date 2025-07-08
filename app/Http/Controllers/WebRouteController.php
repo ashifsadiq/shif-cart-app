@@ -101,9 +101,18 @@ class WebRouteController extends Controller
             "@type"       => "Product",
             "name"        => $product->name,
             "image"       => $product->image,
-            "description" => $product->description,
+            "description" => Str::limit($product->description, 150),
             "review"      => $reviewsSchema,
+            "category"    => $category->name,
         ];
+        if ($product->price < $product->mrp) {
+            $schema["offers"] = [
+                "@type" => "Offer",
+                "price" => number_format($product->price),
+                "mrp"   => number_format($product->mrp),
+
+            ];
+        }
 
         // $this->image ? asset("storage/{$this->image}") : null
         return Inertia::render('Product/ProductDetails', [
