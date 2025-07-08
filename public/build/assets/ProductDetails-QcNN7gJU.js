@@ -1,1 +1,0 @@
-import{j as t}from"./app-DxKfI-0q.js";import{U as r}from"./user-layout-BhhwPNMQ.js";/* empty css            */import"./Navbar-DmOfMs0T.js";const a=()=>t.jsx(r,{children:"ProductDetails"});export{a as default};
