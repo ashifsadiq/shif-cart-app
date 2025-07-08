@@ -87,14 +87,14 @@ class WebRouteController extends Controller
             '<meta property="og:title" content="Buy ' . $product->name . ' | ' . config('app.name') . '">',
             '<meta property="og:description" content="' . Str::limit($product->description, 150) . '">',
             '<meta property="og:url" content="' . url()->current() . '">',
-            '<meta property="og:image" content="' . asset('storage/' . $product->image) . '">',
+            '<meta property="og:image" content="' . $product->image . '">',
             '<meta property="og:site_name" content="' . config('app.name') . '">',
 
             // Twitter Card Tags
             '<meta name="twitter:card" content="summary_large_image">',
             '<meta name="twitter:title" content="Buy ' . $product->name . '">',
             '<meta name="twitter:description" content="' . Str::limit($product->description, 150) . '">',
-            '<meta name="twitter:image" content="' . asset('storage/' . $product->image) . '">',
+            '<meta name="twitter:image" content="' . $product->image . '">',
         ];
         $schema = [
             "@context"    => "https://schema.org",
