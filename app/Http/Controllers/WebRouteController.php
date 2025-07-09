@@ -109,11 +109,8 @@ class WebRouteController extends Controller
             $schema["offers"] = [
                 "@type" => "Offer",
                 "price" => number_format($product->price),
-                "mrp"   => number_format($product->mrp),
-
             ];
         }
-
         // $this->image ? asset("storage/{$this->image}") : null
         return Inertia::render('Product/ProductDetails', [
             'product'       => $product,
