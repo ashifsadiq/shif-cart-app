@@ -30,7 +30,6 @@ class WebRouteController extends Controller
         $product = Product::where('slug', $slug)->firstOrFail();
         $product->load(['images', 'reviews.user', 'category']);
         $data = (new ProductDetailResource($product))->resolve();
-        // return response()->json($data);
         return Inertia::render('Product/ProductDetails', $data);
         // $product->image = $product->image ? asset("storage/{$product->image}") : null;
 

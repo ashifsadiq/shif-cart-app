@@ -16,7 +16,18 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $userGenerateCount = fake()->numberBetween(5, 20);
-
+        $gender            = fake()->randomElement(['male', 'female']);
+        $picture           = null;
+        while ($picture === null) {
+            $picture = $this->fetchAndSaveImage('users', 'https://xsgames.co/randomusers/avatar.php?g=' . $gender);
+        }
+        User::firstOrCreate(['email' => 'test@example.com'], [
+            'name'              => fake()->name($gender),
+            'password'          => Hash::make('password'),
+            'role'              => 'customer',
+            'picture'           => $picture,
+            'email_verified_at' => now(),
+        ]);
         for ($i = 1; $i <= $userGenerateCount; $i++) {
             $gender = fake()->randomElement(['male', 'female']);
 

@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { ProductReview } from '@/types/review';
+import { ProductReview } from '@/types/product';
 import { HTMLProps } from 'react';
 import { Rating } from 'react-simple-star-rating';
 
@@ -9,9 +9,8 @@ type Props = {
 };
 
 const UserReviews = (props: Props) => {
-    const { review, className } = props;
+    var { review, className } = props;
     const { user } = review;
-
     return (
         <div className={cn(className)}>
             {/* user */}

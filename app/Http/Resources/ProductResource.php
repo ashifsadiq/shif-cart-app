@@ -27,21 +27,7 @@ class ProductResource extends JsonResource
             'slug'           => $this->slug,
             'image'          => $this->image ? asset("storage/{$this->image}") : null,
             'images'         => $this->images->map(fn($img) => asset(path: "storage/{$img->image}")),
-            'reviews'        => $this->reviews->map(function ($review) {
-                return [
-                    'id'         => $review->id,
-                    'rating'     => $review->rating,
-                    'title'      => $review->title,
-                    'comment'    => $review->comment,
-                    'user'       => [
-                        'name'    => $review->user->name,
-                        'picture' => $review->user->picture
-                        ? asset("storage/{$review->user->picture}")
-                        : null,
-                    ],
-                    'created_at' => $review->created_at->toDateTimeString(),
-                ];
-            }),
+            'reviews'        => new CommentResource($this->reviews),
             'review_count'   => $this->reviews->count(),
             'average_rating' => round($this->reviews->avg('rating'), 1),
         ];

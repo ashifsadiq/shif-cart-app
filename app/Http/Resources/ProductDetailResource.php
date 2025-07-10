@@ -34,19 +34,7 @@ class ProductDetailResource extends JsonResource
                 ->orderBy('created_at', 'desc')
                 ->limit(11)
                 ->get()
-                ->map(fn($review) => [
-                    'id'         => $review->id,
-                    'rating'     => $review->rating,
-                    'title'      => $review->title,
-                    'comment'    => $review->comment,
-                    'user'       => [
-                        'name'    => $review->user->name,
-                        'picture' => $review->user->picture
-                        ? asset("storage/{$review->user->picture}")
-                        : asset('assets/img/no-user.png'),
-                    ],
-                    'created_at' => $review->created_at->toDateTimeString(),
-                ]),
+                ->map(fn($review) => new CommentResource($review)),
             'review_count'   => $this->reviews->count(),
             'average_rating' => round($this->reviews->avg('rating'), 1),
         ];

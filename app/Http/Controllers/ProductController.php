@@ -57,18 +57,6 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load(['images', 'reviews.user']);
-        // $product->image = $product->image ? asset("storage/{$product->image}") : null;
-        // $category        = Category::find($product->category_id);
-        // $category->image = $category->image ? asset("storage/{$category->image}") : null;
-        // $productImages = ProductImage::where('product_id', $product->id)->get();
-        // $productImages->transform(function ($image) {
-        //     $image->image = $image->image ? asset("storage/{$image->image}") : null;
-        //     return $image;
-        // });
-        // $reviews = Review::where('product_id', $product->id)
-        //     ->orderBy('rating', 'desc')     // sort by rating (highest first)
-        //     ->orderBy('created_at', 'desc') // then by most recent
-        //     ->get();
         return new ProductDetailResource($product);
     }
 

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CartItemIndexResource;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
 
@@ -26,5 +27,14 @@ class CartController extends Controller
         $item->save();
 
         return response()->json(['message' => 'Added to cart']);
+    }
+    public function update(Request $request)
+    {}
+    public function remove(Request $request)
+    {}
+    public function getCart(Request $request)
+    {
+        $CartItem = CartItem::where('user_id', auth()->id())->latest()->get();
+        return CartItemIndexResource::collection($CartItem);
     }
 }

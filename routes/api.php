@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
     Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
-    Route::post('cart/add', [CartController::class, 'add']);
+    Route::post('cart/add', [CartController::class, 'addToCart']);
     Route::post('cart/update', [CartController::class, 'update']);
     Route::post('cart/remove', [CartController::class, 'remove']);
     Route::get('cart', [CartController::class, 'getCart']);

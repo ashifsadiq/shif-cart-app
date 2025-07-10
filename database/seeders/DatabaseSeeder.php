@@ -22,9 +22,5 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             // ProductImageSeeder::class,
         ]);
-        User::factory()->create([
-            'name'  => 'Test User',
-            'email' => 'test@example.com',
-        ]);
     }
 }

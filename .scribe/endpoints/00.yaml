@@ -1,0 +1,983 @@
+name: Endpoints
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/documentation
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Handles the API request and renders the Swagger documentation view.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 500
+        content: |-
+          {
+              "message": "Server Error"
+          }
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/oauth2-callback
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Handles the OAuth2 callback and retrieves the required file for the redirect.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |
+          <!doctype html>
+          <html lang="en-US">
+          <head>
+              <title>Swagger UI: OAuth2 Redirect</title>
+          </head>
+          <body>
+          <script>
+              'use strict';
+              function run () {
+                  var oauth2 = window.opener.swaggerUIRedirectOauth2;
+                  var sentState = oauth2.state;
+                  var redirectUrl = oauth2.redirectUrl;
+                  var isValid, qp, arr;
+
+                  if (/code|token|error/.test(window.location.hash)) {
+                      qp = window.location.hash.substring(1).replace('?', '&');
+                  } else {
+                      qp = location.search.substring(1);
+                  }
+
+                  arr = qp.split("&");
+                  arr.forEach(function (v,i,_arr) { _arr[i] = '"' + v.replace('=', '":"') + '"';});
+                  qp = qp ? JSON.parse('{' + arr.join() + '}',
+                          function (key, value) {
+                              return key === "" ? value : decodeURIComponent(value);
+                          }
+                  ) : {};
+
+                  isValid = qp.state === sentState;
+
+                  if ((
+                    oauth2.auth.schema.get("flow") === "accessCode" ||
+                    oauth2.auth.schema.get("flow") === "authorizationCode" ||
+                    oauth2.auth.schema.get("flow") === "authorization_code"
+                  ) && !oauth2.auth.code) {
+                      if (!isValid) {
+                          oauth2.errCb({
+                              authId: oauth2.auth.name,
+                              source: "auth",
+                              level: "warning",
+                              message: "Authorization may be unsafe, passed state was changed in server. The passed state wasn't returned from auth server."
+                          });
+                      }
+
+                      if (qp.code) {
+                          delete oauth2.state;
+                          oauth2.auth.code = qp.code;
+                          oauth2.callback({auth: oauth2.auth, redirectUrl: redirectUrl});
+                      } else {
+                          let oauthErrorMsg;
+                          if (qp.error) {
+                              oauthErrorMsg = "["+qp.error+"]: " +
+                                  (qp.error_description ? qp.error_description+ ". " : "no accessCode received from the server. ") +
+                                  (qp.error_uri ? "More info: "+qp.error_uri : "");
+                          }
+
+                          oauth2.errCb({
+                              authId: oauth2.auth.name,
+                              source: "auth",
+                              level: "error",
+                              message: oauthErrorMsg || "[Authorization failed]: no accessCode received from the server."
+                          });
+                      }
+                  } else {
+                      oauth2.callback({auth: oauth2.auth, token: qp, isValid: isValid, redirectUrl: redirectUrl});
+                  }
+                  window.close();
+              }
+
+              if (document.readyState !== 'loading') {
+                  run();
+              } else {
+                  document.addEventListener('DOMContentLoaded', function () {
+                      run();
+                  });
+              }
+          </script>
+          </body>
+          </html>
+        headers:
+          content-type: 'text/html; charset=UTF-8'
+          cache-control: 'no-cache, private'
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/user
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/register
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      email:
+        name: email
+        description: 'Must be a valid email address. Must not be greater than 255 characters.'
+        required: true
+        example: zbailey@example.net
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      password:
+        name: password
+        description: 'Must be at least 8 characters.'
+        required: true
+        example: '-0pBNvYgxw'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      name: b
+      email: zbailey@example.net
+      password: '-0pBNvYgxw'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/login
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: 'Must be a valid email address.'
+        required: true
+        example: gbailey@example.net
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      password:
+        name: password
+        description: ''
+        required: true
+        example: '|]|{+-'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      email: gbailey@example.net
+      password: '|]|{+-'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/products
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"data":[{"id":1,"name":"Exercitationem Minima Impedit Placeat Culpa Odit Porro Et Numquam Ea Eius Enim Impedit Et","slug":"exercitationem-minima-impedit-placeat-culpa-odit-porro-et-numquam-ea-eius-enim-impedit-et-3299","price":725.48,"image":"http:\/\/192.168.1.69:8000\/storage\/products\/425f8959-fed0-471c-80fc-a964f7038a91.jpg","review_count":35,"mrp":895.65,"discount":19},{"id":2,"name":"Ea Ut Et Tempora Est Recusandae Accusantium","slug":"ea-ut-et-tempora-est-recusandae-accusantium-3747","price":546.29,"image":"http:\/\/192.168.1.69:8000\/storage\/products\/312e7a90-15d3-4583-834a-8243a577604d.jpg","review_count":43,"mrp":803.37,"discount":32},{"id":3,"name":"Consequatur At Fugit Est Unde Ipsa Eligendi Error Itaque Eum Quisquam Aut Eligendi Totam Autem Corporis Suscipit","slug":"consequatur-at-fugit-est-unde-ipsa-eligendi-error-itaque-eum-quisquam-aut-eligendi-totam-autem-corporis-suscipit-3243","price":454.09,"image":"http:\/\/192.168.1.69:8000\/storage\/products\/e9b3cf8b-9f76-4dea-9e4e-c5eb7f0dd3b2.jpg","review_count":57,"mrp":908.17,"discount":50},{"id":4,"name":"Dolore Ipsum Sed Quae Quia Adipisci","slug":"dolore-ipsum-sed-quae-quia-adipisci-3810","price":692.76,"image":"http:\/\/192.168.1.69:8000\/storage\/products\/5d4d14bb-09ea-44cd-bd1e-bac33f44cb63.jpg","review_count":29,"mrp":834.65,"discount":17},{"id":5,"name":"Officia Eius Quis Accusamus Cumque Qui Et Explicabo Molestiae Quia Quam Veniam Voluptatem Qui Cupiditate Ducimus","slug":"officia-eius-quis-accusamus-cumque-qui-et-explicabo-molestiae-quia-quam-veniam-voluptatem-qui-cupiditate-ducimus-8449","price":475.87,"image":"http:\/\/192.168.1.69:8000\/storage\/products\/0be3446f-0b64-4f02-af90-c0cc553afac9.jpg","review_count":23,"mrp":849.77,"discount":44},{"id":6,"name":"Quo Quo Quidem Fuga Sed Sit Animi Rem Maxime Quo Perferendis Non Quaerat Laborum Minima Non Quas Porro Magnam","slug":"quo-quo-quidem-fuga-sed-sit-animi-rem-maxime-quo-perferendis-non-quaerat-laborum-minima-non-quas-porro-magnam-9796","price":198.08,"image":"http:\/\/192.168.1.69:8000\/storage\/products\/4fd60fbb-bde8-461c-929d-496baae7a0a2.jpg","review_count":55,"mrp":300.12,"discount":34},{"id":7,"name":"Est Modi Ea Ea Voluptas Veniam Exercitationem Autem Dolor Sit Omnis Natus Dolores Et Praesentium Quidem Sunt","slug":"est-modi-ea-ea-voluptas-veniam-exercitationem-autem-dolor-sit-omnis-natus-dolores-et-praesentium-quidem-sunt-4898","price":135.47,"image":"http:\/\/192.168.1.69:8000\/storage\/products\/87fe6987-2b2e-4552-812f-37503a213e9c.jpg","review_count":16,"mrp":237.66,"discount":43},{"id":8,"name":"Dolorem Ut Qui Beatae Soluta Ducimus Dolores Neque Quo Sint Adipisci Labore Nemo Neque Asperiores Quasi Voluptatibus Nam Sit","slug":"dolorem-ut-qui-beatae-soluta-ducimus-dolores-neque-quo-sint-adipisci-labore-nemo-neque-asperiores-quasi-voluptatibus-nam-sit-2404","price":626.17,"image":"http:\/\/192.168.1.69:8000\/storage\/products\/47eb1adb-1e03-4005-97d1-12b14213071a.jpg","review_count":25,"mrp":695.74,"discount":10},{"id":9,"name":"Dolorem Magni At Autem Rem Similique Vero Tempora","slug":"dolorem-magni-at-autem-rem-similique-vero-tempora-7521","price":754.58,"image":"http:\/\/192.168.1.69:8000\/storage\/products\/80fa5d76-fca2-42c5-80fc-75210385c7b2.jpg","review_count":73,"mrp":931.58,"discount":19},{"id":10,"name":"Quae Dicta Eligendi Illum Aut Est Libero Esse Voluptatem Quasi Autem Et Deleniti Asperiores Consequatur Sed Et Aut Aut","slug":"quae-dicta-eligendi-illum-aut-est-libero-esse-voluptatem-quasi-autem-et-deleniti-asperiores-consequatur-sed-et-aut-aut-7596","price":244.57,"image":"http:\/\/192.168.1.69:8000\/storage\/products\/1a6a0fc3-f9c0-4d78-afec-15e84f94d8dd.jpg","review_count":65,"mrp":344.47,"discount":29}],"links":{"first":"http:\/\/192.168.1.69:8000\/api\/products?page=1","last":"http:\/\/192.168.1.69:8000\/api\/products?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","active":false},{"url":"http:\/\/192.168.1.69:8000\/api\/products?page=1","label":"1","active":true},{"url":null,"label":"Next &raquo;","active":false}],"path":"http:\/\/192.168.1.69:8000\/api\/products","per_page":12,"to":10,"total":10}}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/products/{id}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the product.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"data":{"id":1,"name":"Exercitationem Minima Impedit Placeat Culpa Odit Porro Et Numquam Ea Eius Enim Impedit Et","description":"architecto quae necessitatibus eum aliquid excepturi et laborum et et mollitia inventore sit ipsum repellat ut atque suscipit magni dolorem quia eaque repellendus quis magnam omnis officia illo velit sunt unde aspernatur adipisci dolores at nam a eius accusamus sint veniam et nihil voluptatem ab id praesentium ducimus nihil animi reiciendis aut inventore maxime dolor provident ea tenetur dolor aut quis provident quis id exercitationem at quod sed iusto et et odit et et consequuntur distinctio est ut sint consequatur aut nesciunt omnis quia voluptatem illo deleniti quisquam minima unde fugiat est illo debitis consequatur sit doloribus aut illo enim odit perferendis error a iste delectus minima dicta hic aut sed voluptas aut sed hic rerum fuga porro labore sit omnis ea repudiandae voluptates omnis aut autem ad in laborum et quam rerum doloribus voluptatem voluptatum ipsum nisi maiores sapiente consequuntur labore aspernatur sunt nemo quaerat perferendis eaque voluptatibus autem velit iusto explicabo omnis odio eos non delectus beatae reiciendis sint blanditiis expedita vel nisi assumenda harum dolore et nesciunt laudantium officiis incidunt repudiandae cumque nesciunt aperiam voluptas qui blanditiis voluptates culpa hic et repellat corrupti et ab deserunt exercitationem omnis fugit alias placeat rerum enim possimus dolores consequuntur ut sunt deleniti maiores mollitia ut similique aut quo vel omnis temporibus ullam est et fugiat cumque sit provident facilis eum molestiae similique minus accusamus dolore quia veritatis voluptates dolor quas quia qui et eos adipisci rem vel culpa dolorem reprehenderit dolore exercitationem ipsam harum eveniet est rerum nemo error aut laudantium voluptatem sit ipsum provident id voluptates sint dolorum voluptatem quod facere debitis reprehenderit cumque quisquam et libero quia illum dolorem alias tempore aut aspernatur aut sequi et et repellat et aut non minima ut omnis possimus ipsum autem enim est voluptatem iure laboriosam facilis dolorem atque est cupiditate quisquam ut nulla veritatis quae eum iure quod veritatis laudantium sunt labore ipsa sapiente illum consequatur ad cupiditate minima aspernatur sit et est minus et hic est voluptatum distinctio qui sequi voluptas modi ipsam rem illo sint illo velit quod aut delectus accusamus molestiae molestiae excepturi ut expedita cupiditate enim ea incidunt et quibusdam ullam ullam eveniet quis velit dolor rerum maxime totam earum quasi voluptatibus occaecati quia magni omnis dolores eaque aut dolorem sunt quaerat tempore tenetur et ea voluptatem eligendi nostrum molestias minima reprehenderit mollitia qui eaque rerum ut aut placeat consequatur cumque rerum harum quis officia veniam delectus maiores inventore sunt ea vel odit eum illum voluptas nemo autem eum","price":725.48,"category":{"id":1,"name":"Brody Tromp","slug":"ut-reprehenderit-adipisci-hic-et","description":"consequatur incidunt sed aut qui","image":"http:\/\/192.168.1.69:8000\/storage\/categories\/7c6311b5-7698-4382-ad2a-3bd51dd46934.jpg","created_at":"2025-07-10T12:59:16.000000Z","updated_at":"2025-07-10T12:59:16.000000Z"},"slug":"exercitationem-minima-impedit-placeat-culpa-odit-porro-et-numquam-ea-eius-enim-impedit-et-3299","image":"http:\/\/192.168.1.69:8000\/storage\/products\/425f8959-fed0-471c-80fc-a964f7038a91.jpg","images":[],"reviews":[{"id":3,"rating":5,"title":"Aliquam Quos Molestiae Et","comment":"Mollitia similique aut dignissimos rerum debitis est eius.","user":{"id":7,"name":"Margie Kuhlman","email":"joey.olson@example.com","role":"customer","picture":"http:\/\/192.168.1.69:8000\/storage\/users\/c0878d71-1478-452d-978f-fe82c5e48d45.jpg"},"created_at":"2025-07-10 12:59:21","updated_at":"2025-07-10 12:59:21"},{"id":7,"rating":5,"title":"Magnam In Eum Veritatis Maxime Eius","comment":"Rem nostrum quia iusto animi et id esse.","user":{"id":20,"name":"Liliane Weber","email":"caroline54@example.org","role":"customer","picture":"http:\/\/192.168.1.69:8000\/storage\/users\/5c337964-e075-4065-bead-01ae526dc2b7.jpg"},"created_at":"2025-07-10 12:59:21","updated_at":"2025-07-10 12:59:21"},{"id":16,"rating":5,"title":"Provident Sint","comment":null,"user":{"id":3,"name":"Giovani Moore","email":"leif59@example.com","role":"customer","picture":"http:\/\/192.168.1.69:8000\/storage\/users\/e834ee53-5c4b-4de4-bc41-51d50647fcc2.jpg"},"created_at":"2025-07-10 12:59:21","updated_at":"2025-07-10 12:59:21"},{"id":21,"rating":5,"title":"Occaecati Tempora Veniam Itaque","comment":"Quia voluptatibus repellendus dolorem doloribus officia neque dolor dolorum omnis.","user":{"id":18,"name":"Prof. Landen Vandervort","email":"vlarkin@example.net","role":"customer","picture":"http:\/\/192.168.1.69:8000\/storage\/users\/3bec6ee1-15c4-4f8d-879e-42442b54269d.jpg"},"created_at":"2025-07-10 12:59:21","updated_at":"2025-07-10 12:59:21"},{"id":4,"rating":4,"title":"Illo Minus Vel Excepturi","comment":"Architecto repudiandae et est unde natus aut labore possimus quae dolorem nobis vitae quam quasi in necessitatibus provident repellendus quis repellendus.","user":{"id":14,"name":"Margaretta Dach","email":"adah05@example.com","role":"customer","picture":"http:\/\/192.168.1.69:8000\/storage\/users\/67a493ff-bbac-433b-8275-fd9e5b378e85.jpg"},"created_at":"2025-07-10 12:59:21","updated_at":"2025-07-10 12:59:21"},{"id":6,"rating":4,"title":"Omnis Minima Nam","comment":"Doloremque iusto ipsam hic dicta sit nesciunt incidunt voluptas iste.","user":{"id":14,"name":"Margaretta Dach","email":"adah05@example.com","role":"customer","picture":"http:\/\/192.168.1.69:8000\/storage\/users\/67a493ff-bbac-433b-8275-fd9e5b378e85.jpg"},"created_at":"2025-07-10 12:59:21","updated_at":"2025-07-10 12:59:21"},{"id":8,"rating":4,"title":"Et Suscipit Voluptatem Aspernatur Non","comment":"Et modi qui et qui quis iure est provident et explicabo nesciunt dolorem illum suscipit ipsam quaerat illum voluptatem in quam omnis eos voluptates cupiditate corrupti amet facilis.","user":{"id":18,"name":"Prof. Landen Vandervort","email":"vlarkin@example.net","role":"customer","picture":"http:\/\/192.168.1.69:8000\/storage\/users\/3bec6ee1-15c4-4f8d-879e-42442b54269d.jpg"},"created_at":"2025-07-10 12:59:21","updated_at":"2025-07-10 12:59:21"},{"id":13,"rating":4,"title":"Tempora Voluptatem","comment":"Sed architecto maxime repudiandae quas rerum.","user":{"id":21,"name":"Admin User","email":"admin@example.com","role":"admin","picture":"http:\/\/192.168.1.69:8000\/assets\/img\/no-user.png"},"created_at":"2025-07-10 12:59:21","updated_at":"2025-07-10 12:59:21"},{"id":14,"rating":4,"title":"Et Dolor Voluptatem Eos Sint","comment":"Provident vitae fuga veritatis aperiam soluta incidunt illum nam reiciendis libero quae.","user":{"id":17,"name":"Cary Beatty DVM","email":"ybernhard@example.com","role":"customer","picture":"http:\/\/192.168.1.69:8000\/storage\/users\/bccd2572-e692-4521-b88d-cc2e0ea0bc1b.jpg"},"created_at":"2025-07-10 12:59:21","updated_at":"2025-07-10 12:59:21"},{"id":15,"rating":4,"title":"Dolorem Magni Quasi Iste Quidem","comment":null,"user":{"id":3,"name":"Giovani Moore","email":"leif59@example.com","role":"customer","picture":"http:\/\/192.168.1.69:8000\/storage\/users\/e834ee53-5c4b-4de4-bc41-51d50647fcc2.jpg"},"created_at":"2025-07-10 12:59:21","updated_at":"2025-07-10 12:59:21"},{"id":23,"rating":4,"title":"Accusantium Enim Quis Ipsum","comment":null,"user":{"id":6,"name":"Stanford Will","email":"mccullough.nannie@example.org","role":"customer","picture":"http:\/\/192.168.1.69:8000\/storage\/users\/a75b03c9-0da7-44e2-890f-f9abb6c5f33b.jpg"},"created_at":"2025-07-10 12:59:21","updated_at":"2025-07-10 12:59:21"}],"review_count":35,"average_rating":3,"mrp":895.65,"discount":19}}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/logout
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/categories
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/categories/{id}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the category.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/cart/add
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      product_id:
+        name: product_id
+        description: 'The <code>id</code> of an existing record in the products table.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      quantity:
+        name: quantity
+        description: 'Must be at least 1.'
+        required: false
+        example: 22
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      product_id: architecto
+      quantity: 22
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/products
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      category_id:
+        name: category_id
+        description: 'The <code>id</code> of an existing record in the categories table.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      name:
+        name: name
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: ''
+        required: false
+        example: 'Eius et animi quos velit et.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      price:
+        name: price
+        description: 'Must be at least 1.'
+        required: true
+        example: 16
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      stock_quantity:
+        name: stock_quantity
+        description: 'Must be at least 0.'
+        required: true
+        example: 42
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      image:
+        name: image
+        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      is_featured:
+        name: is_featured
+        description: ''
+        required: false
+        example: false
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      category_id: architecto
+      name: 'n'
+      description: 'Eius et animi quos velit et.'
+      price: 16
+      stock_quantity: 42
+      is_featured: false
+    fileParameters:
+      image: null
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/products/{id}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the product.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/products/{id}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the product.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/products/{product_id}/upload-image'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      product_id:
+        name: product_id
+        description: 'The ID of the product.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      product_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      image:
+        name: image
+        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters: []
+    fileParameters:
+      image: null
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/users
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/users/{id}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the user.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/users/{id}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the user.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      email:
+        name: email
+        description: 'Must be a valid email address.'
+        required: true
+        example: zbailey@example.net
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      role:
+        name: role
+        description: 'The <code>name</code> of an existing record in the roles table.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      name: b
+      email: zbailey@example.net
+      role: architecto
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

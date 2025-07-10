@@ -32,6 +32,7 @@ const ProductDetailedImages = ({ productImages }: ProductDetailedImages) => {
                 <div className="flex gap-x-2 whitespace-nowrap">
                     {allProductImages.map((image, index) => (
                         <button
+                            key={index.toString()}
                             onClick={() => handleThumbnailClick(index)}
                             ref={(el) => {
                                 imagesThumbnailRef.current[index] = el;
