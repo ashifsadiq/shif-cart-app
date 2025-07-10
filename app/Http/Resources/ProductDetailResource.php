@@ -4,18 +4,12 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductResource extends JsonResource
+class ProductDetailResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        $price = floatval($this->price);
-        $mrp   = floatval($this->mrp);
-
+        $price       = floatval($this->price);
+        $mrp         = floatval($this->mrp);
         $hasDiscount = $mrp > $price;
 
         $data = [
@@ -26,9 +20,16 @@ class ProductResource extends JsonResource
             'category_id'    => $this->category_id,
             'slug'           => $this->slug,
             'image'          => $this->image ? asset("storage/{$this->image}") : null,
-            'images'         => $this->images->map(fn($img) => asset(path: "storage/{$img->image}")),
-            'reviews'        => $this->reviews->map(function ($review) {
-                return [
+            'images'         => $this->images->map(
+                fn($img) => $img->image? asset("storage/{$img->image}"):null
+            ),
+            'reviews'        => $this->reviews()
+                ->with('user')
+                ->orderBy('rating', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->limit(13)
+                ->get()
+                ->map(fn($review) => [
                     'id'         => $review->id,
                     'rating'     => $review->rating,
                     'title'      => $review->title,
@@ -40,8 +41,7 @@ class ProductResource extends JsonResource
                         : null,
                     ],
                     'created_at' => $review->created_at->toDateTimeString(),
-                ];
-            }),
+                ]),
             'review_count'   => $this->reviews->count(),
             'average_rating' => round($this->reviews->avg('rating'), 1),
         ];
@@ -49,7 +49,7 @@ class ProductResource extends JsonResource
         if ($hasDiscount) {
             $discount         = (($mrp - $price) / $mrp) * 100;
             $data['mrp']      = round($mrp, 2);
-            $data['discount'] = round($discount); // whole number (e.g., 15%)
+            $data['discount'] = round($discount);
         }
 
         return $data;

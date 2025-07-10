@@ -3,8 +3,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Http\Resources\ProductIndexResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductDetailResource;
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -32,7 +36,7 @@ class ProductController extends Controller
             $products->orderBy($sortBy, $sortOrder);
         }
 
-        return ProductResource::collection($products->paginate(12));
+        return ProductIndexResource::collection($products->paginate(12));
     }
     public function adminIndex(Request $request)
     {
@@ -52,7 +56,20 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return new ProductResource($product);
+        $product->load(['images', 'reviews.user']);
+        // $product->image = $product->image ? asset("storage/{$product->image}") : null;
+        // $category        = Category::find($product->category_id);
+        // $category->image = $category->image ? asset("storage/{$category->image}") : null;
+        // $productImages = ProductImage::where('product_id', $product->id)->get();
+        // $productImages->transform(function ($image) {
+        //     $image->image = $image->image ? asset("storage/{$image->image}") : null;
+        //     return $image;
+        // });
+        // $reviews = Review::where('product_id', $product->id)
+        //     ->orderBy('rating', 'desc')     // sort by rating (highest first)
+        //     ->orderBy('created_at', 'desc') // then by most recent
+        //     ->get();
+        return new ProductDetailResource($product);
     }
 
     public function update(ProductUpdateRequest $request, Product $product)
