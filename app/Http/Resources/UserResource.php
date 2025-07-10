@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -14,6 +13,12 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // [
+        //                 'name'    => $review->user->name,
+        //                 'picture' => $review->user->picture
+        //                 ? asset("storage/{$review->user->picture}")
+        //                 : asset('assets/img/no-user.png'),
+        //             ]
         return parent::toArray($request);
     }
 }

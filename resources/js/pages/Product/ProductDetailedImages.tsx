@@ -38,7 +38,7 @@ const ProductDetailedImages = ({ productImages }: ProductDetailedImages) => {
                             }}
                             className={cn(
                                 'bg-background flex min-w-fit shrink-0 cursor-pointer items-center justify-center rounded-lg border-2',
-                                activeImageIndex === index ? 'border-primary' : 'border-muted border',
+                                activeImageIndex === index ? 'border-primary' : 'border-muted',
                             )}
                         >
                             <img
@@ -46,8 +46,8 @@ const ProductDetailedImages = ({ productImages }: ProductDetailedImages) => {
                                 src={`${image}`}
                                 alt={`Product Image ${index + 1}`}
                                 className={cn(
-                                    'h-10 w-10 rounded-lg border-2 object-cover',
-                                    activeImageIndex === index ? 'border-background' : 'border-muted border',
+                                    'h-10 w-10 rounded-lg border object-cover',
+                                    activeImageIndex === index ? 'border-background' : 'border-muted',
                                 )}
                             />
                         </button>

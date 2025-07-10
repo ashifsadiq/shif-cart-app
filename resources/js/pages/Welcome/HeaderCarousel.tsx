@@ -26,7 +26,7 @@ function SimpleSlider() {
                     .fill('')
                     .map((_, i) => (
                         <div key={i} className="bg-red-500">
-                            <img src={`https://picsum.photos/${width}/${height}?random=${i}`} className="w-full" alt={`Slide ${i}`} />
+                            <img loading='lazy' src={`https://picsum.photos/${width}/${height}?random=${i}`} className="w-full" alt={`Slide ${i}`} />
                         </div>
                     ))}
             </Slider>

@@ -1,3 +1,5 @@
+import { User } from ".";
+
 export interface Product {
     id: number;
     category_id: number;
@@ -9,7 +11,7 @@ export interface Product {
     rating: number;
     rating_count: number;
     stock_quantity: number;
-    image: string;
+    image: URL;
     is_featured: boolean;
     available_from: string;
     available_to: string;
@@ -44,4 +46,12 @@ export interface ProductImage {
     position: number;
     created_at: string;
     updated_at: string;
+}
+
+export interface ProductReview {
+    id: number;
+    rating: number;
+    title: string;
+    comment: string;
+    user: User;
 }

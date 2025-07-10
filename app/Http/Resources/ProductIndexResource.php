@@ -14,6 +14,7 @@ class ProductIndexResource extends JsonResource
         $data = [
             'id'           => $this->id,
             'name'         => $this->name,
+            'slug'         => $this->slug,
             'price'        => round(floatval($this->price), 2),
             'image'        => $this->image ? asset("storage/{$this->image}") : null,
             'review_count' => $this->reviews_count ?? $this->reviews()->count(),

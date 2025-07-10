@@ -17,17 +17,22 @@ class ProductDetailResource extends JsonResource
             'name'           => $this->name,
             'description'    => $this->description,
             'price'          => round($price, 2),
-            'category_id'    => $this->category_id,
+            'category'       => array_merge(
+                $this->category ? $this->category->toArray() : [],
+                [
+                    'image' => $this->category && $this->category->image ? asset("storage/{$this->category->image}") : null,
+                ]
+            ),
             'slug'           => $this->slug,
-            'image'          => $this->image ? asset("storage/{$this->image}") : null,
+            'image'          => $this->image ? asset("storage/{$this->image}") : asset('assets/img/no-image-available.png'),
             'images'         => $this->images->map(
-                fn($img) => $img->image? asset("storage/{$img->image}"):null
+                fn($img) => $img->image ? asset("storage/{$img->image}") : asset('assets/img/no-image-available.png')
             ),
             'reviews'        => $this->reviews()
                 ->with('user')
                 ->orderBy('rating', 'desc')
                 ->orderBy('created_at', 'desc')
-                ->limit(13)
+                ->limit(11)
                 ->get()
                 ->map(fn($review) => [
                     'id'         => $review->id,
@@ -38,7 +43,7 @@ class ProductDetailResource extends JsonResource
                         'name'    => $review->user->name,
                         'picture' => $review->user->picture
                         ? asset("storage/{$review->user->picture}")
-                        : null,
+                        : asset('assets/img/no-user.png'),
                     ],
                     'created_at' => $review->created_at->toDateTimeString(),
                 ]),

@@ -45,7 +45,7 @@ class ProductSeeder extends Seeder
 
                 $productImage = null;
                 while ($productImage === null) {
-                    $productImage = $this->fetchAndSaveImage('categories');
+                    $productImage = $this->fetchAndSaveImage('products');
                 }
 
                 if ($productImage) {
