@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('quantity')->default(1);
             $table->decimal('price', 10, 2); // unit price at time of order
             $table->timestamps();
+            
         });
     }
 

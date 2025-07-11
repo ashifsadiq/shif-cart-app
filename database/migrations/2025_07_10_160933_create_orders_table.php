@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    // https://rushx.jobexpart.com/process_auto_payment.php
+    // amount 100p
+
+
     /**
      * Run the migrations.
      */

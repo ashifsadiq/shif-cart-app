@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,9 +48,9 @@ class AuthController extends Controller
             ]);
         }
 
-        $user  = Auth::user();
-        $user->picture          = $user->picture ? asset("storage/{$user->picture}") : null;
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $user          = Auth::user();
+        $user->picture = $user->picture ? asset("storage/{$user->picture}") : null;
+        $token         = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'user'    => $user,
@@ -67,6 +68,10 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        return response()->json(
+            new UserResource(
+                $request->user()
+            )
+        );
     }
 }

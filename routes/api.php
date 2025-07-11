@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('cart/update', [CartController::class, 'update']);
     Route::post('cart/remove', [CartController::class, 'remove']);
     Route::get('cart', [CartController::class, 'getCart']);
+    Route::apiResource('orders', OrderController::class);
 });
 Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin'])->group(function () {
     // E-commerce routes
@@ -34,7 +35,6 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin'])->group(fun
     Route::apiResource('categories', CategoryController::class)->except(['show']);
     Route::post('products/{product}/upload-image', [ProductController::class, 'uploadImage']);
     Route::post('checkout', [OrderController::class, 'checkout']);
-    Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
     Route::apiResource('reviews', ReviewController::class);
 
     // Content management routes

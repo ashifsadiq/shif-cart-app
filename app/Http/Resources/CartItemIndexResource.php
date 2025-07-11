@@ -12,8 +12,6 @@ public function toArray(Request $request): array
 {
     return [
         'id'         => $this->id,
-        'user_id'    => $this->user_id,
-        'product_id' => $this->product_id,
         'product' => new ProductIndexResource(Product::find($this->product_id)),
         'quantity'   => $this->quantity,
     ];
