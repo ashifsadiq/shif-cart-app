@@ -39,7 +39,7 @@ class ProductController extends Controller
             $sortOrder = $request->query('sortOrder', 'asc');
             $products->orderBy($sortBy, $sortOrder);
         }
-        return ProductIndexResource::collection($recentProducts);
+        return ProductIndexResource::collection($products->paginate(12));
     }
     public function adminIndex(Request $request)
     {
