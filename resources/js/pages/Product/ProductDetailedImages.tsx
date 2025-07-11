@@ -27,7 +27,7 @@ const ProductDetailedImages = ({ productImages }: ProductDetailedImages) => {
     };
     return (
         <div className="space-y-3">
-            <img itemProp="image" src={`${allProductImages[activeImageIndex]}`} alt={`Product Image `} className={cn('h-auto w-full rounded-lg object-cover bg-foreground dark:bg-foreground')} />
+            <img itemProp="image" src={`${allProductImages[activeImageIndex]}`} alt={`Product Image `} className={cn('h-auto w-full rounded-lg object-cover dark:bg-foreground')} />
             <div ref={imagesContainerRef} className="scrollbar-hide w-full overflow-x-auto">
                 <div className="flex gap-x-2 whitespace-nowrap">
                     {allProductImages.map((image, index) => (
@@ -47,7 +47,7 @@ const ProductDetailedImages = ({ productImages }: ProductDetailedImages) => {
                                 src={`${image}`}
                                 alt={`Product Image ${index + 1}`}
                                 className={cn(
-                                    'h-10 w-10 rounded-lg border object-cover bg-foreground dark:bg-foreground',
+                                    'h-10 w-10 rounded-lg border object-cover dark:bg-foreground',
                                     activeImageIndex === index ? 'border-background' : 'border-muted',
                                 )}
                             />
