@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\CategoriesIndexResource;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -10,7 +11,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        return Category::paginate();
+        return CategoriesIndexResource::collection(Category::paginate());
     }
     public function show($slug)
     {
