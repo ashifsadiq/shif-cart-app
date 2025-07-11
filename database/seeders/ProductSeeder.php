@@ -19,7 +19,7 @@ class ProductSeeder extends Seeder
         Storage::disk('public')->deleteDirectory('categories');
         // https://dummyjson.com/products/categories -> name, slug, description, image
         $categoryRequest = Http::get('https://dummyjson.com/products/categories');
-        $productReviewCount = 399999;
+        $productReviewCount = User::count();
         if ($categoryRequest->ok()) {
             $categories = $categoryRequest->json();
             foreach ($categories as $categoryJson) {
