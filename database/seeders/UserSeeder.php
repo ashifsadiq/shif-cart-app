@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
         while ($picture === null) {
             $picture = $this->fetchAndSaveImage('users', 'https://xsgames.co/randomusers/avatar.php?g=' . $gender);
         }
+        $this->command->info(string: "Generate default user");
         User::firstOrCreate(['email' => 'test@example.com'], [
             'name'              => fake()->name($gender),
             'password'          => Hash::make('password'),
