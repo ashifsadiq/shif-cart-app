@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         Storage::disk('public')->deleteDirectory('users');
-        $userGenerateCount = fake()->numberBetween(5, 500);
+        $userGenerateCount = fake()->numberBetween(5, 50);
         $gender            = fake()->randomElement(['male', 'female']);
         $picture           = null;
         while ($picture === null) {
@@ -26,7 +26,6 @@ class UserSeeder extends Seeder
         User::firstOrCreate(['email' => 'test@example.com'], [
             'name'              => fake()->name($gender),
             'password'          => Hash::make('password'),
-            'role'              => 'customer',
             'picture'           => $picture,
             'email_verified_at' => now(),
         ]);

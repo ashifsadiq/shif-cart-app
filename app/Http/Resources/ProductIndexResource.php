@@ -23,9 +23,8 @@ class ProductIndexResource extends JsonResource
         ];
         $hasDiscount = $mrp > $price;
         if ($hasDiscount) {
-            $discount         = (($mrp - $price) / $mrp) * 100;
-            $data['mrp']      = number_format((float) $this->price, 2);
-            $data['discount'] = round($discount); // whole number (e.g., 15%)
+            $data['discount'] = $this->discount; // whole number (e.g., 15%)
+            $data['mrp']      = number_format((float) $this->mrp, 2);
         }
         return $data;
     }

@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserDashboard;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,8 +17,6 @@ use Illuminate\Support\Facades\Route;
 define('PUBLIC_METHODS', ['index', 'show']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::apiResource('products', ProductController::class)->only(PUBLIC_METHODS);
-Route::apiResource('categories', CategoryController::class)->only(PUBLIC_METHODS);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
@@ -27,6 +26,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('cart', [CartController::class, 'getCart']);
     Route::apiResource('orders', OrderController::class);
 });
+// optional auth
+Route::get('dashboard', [UserDashboard::class, 'dashboard']);
+Route::get('dashboard/profile', [UserDashboard::class, 'profile']);
+
+
+Route::apiResource('products', ProductController::class)->only(PUBLIC_METHODS);
+Route::apiResource('categories', CategoryController::class)->only(PUBLIC_METHODS);
 Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin'])->group(function () {
     // E-commerce routes
     Route::apiResource('products', ProductController::class)->except(PUBLIC_METHODS);

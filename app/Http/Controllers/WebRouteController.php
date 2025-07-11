@@ -5,6 +5,7 @@ use App\Http\Resources\ProductDetailResource;
 use App\Http\Resources\ProductIndexResource;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\RecentlyViewedProduct;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -25,13 +26,24 @@ class WebRouteController extends Controller
             ->get();
         $productsData = ProductIndexResource::collection($products);
         return Inertia::render('Welcome/Welcome', [
-            'categories' => Category::paginate(100, ['*'], 'category_page', $categoryPage),
-            'products'   => $productsData,
+            'categories'     => Category::paginate(100, ['*'], 'category_page', $categoryPage),
+            'products'       => $productsData,
         ]);
     }
     public function productShow(Request $request, $slug)
     {
         $product = Product::where('slug', $slug)->firstOrFail();
+        if (auth()->check()) {
+            RecentlyViewedProduct::updateOrCreate(
+                [
+                    'user_id'    => auth()->id(),
+                    'product_id' => $product->id,
+                ],
+                [
+                    'viewed_at' => now(),
+                ]
+            );
+        }
         $product->load(['images', 'reviews.user', 'category']);
         $data = (new ProductDetailResource($product))->resolve();
         return Inertia::render('Product/ProductDetails', $data);

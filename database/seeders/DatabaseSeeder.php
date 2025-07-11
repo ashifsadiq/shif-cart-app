@@ -16,10 +16,11 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         // Clean product and category image folders
         $this->call([
-            UserSeeder::class,
+            // UserSeeder::class,
             RoleSeeder::class,
             AdminUserSeeder::class,
             ProductSeeder::class,
+            RecentlyViewedProductSeeder::class,
         ]);
     }
 }

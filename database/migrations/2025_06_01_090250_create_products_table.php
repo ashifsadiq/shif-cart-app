@@ -19,6 +19,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->decimal('mrp', 10, 2);
+            $table->integer('discount')->default(0);
+            $table->integer('sales')->default(0);
             $table->decimal('rating', 2, 1)->default(0);
             $table->integer('rating_count')->default(0);
             $table->integer('stock_quantity')->default(0);

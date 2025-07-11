@@ -9,7 +9,6 @@ return new class extends Migration
     // https://rushx.jobexpart.com/process_auto_payment.php
     // amount 100p
 
-
     /**
      * Run the migrations.
      */
@@ -19,7 +18,18 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('order_number')->unique();
-            $table->enum('status', ['pending', 'processing', 'completed', 'cancelled', 'refunded'])->default('pending');
+            $table->enum('status', [
+                'pending',
+                'processing',
+                'placed',
+                'conformed',
+                'packed',
+                'shipped',
+                'completed',
+                'cancelled',
+                'returning',
+                'refunded',
+            ])->default('pending');
             $table->string('payment_id')->nullable();
             $table->decimal('amount', 10, 2);
             $table->decimal('tax', 10, 2)->default(0.00);

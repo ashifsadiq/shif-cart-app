@@ -3,12 +3,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Http\Resources\ProductDetailResource;
 use App\Http\Resources\ProductIndexResource;
 use App\Http\Resources\ProductResource;
-use App\Http\Resources\ProductDetailResource;
-use App\Models\Category;
 use App\Models\Product;
-use App\Models\ProductImage;
+use App\Models\RecentlyViewedProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -17,8 +16,13 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $products = Product::query();
-
+        $products       = Product::query();
+        $recentProducts = RecentlyViewedProduct::with('product')
+            ->where('user_id', auth()->id())
+            ->orderByDesc('viewed_at')
+            ->limit(10)
+            ->get()
+            ->pluck('product');
         // Search functionality
         if ($search = $request->query('search')) {
             $products->where('name', 'like', "%{$search}%")
@@ -35,16 +39,15 @@ class ProductController extends Controller
             $sortOrder = $request->query('sortOrder', 'asc');
             $products->orderBy($sortBy, $sortOrder);
         }
-
-        return ProductIndexResource::collection($products->paginate(12));
+        return ProductIndexResource::collection($recentProducts);
     }
     public function adminIndex(Request $request)
     {
         $CategoryController = new CategoryController;
-        $category = $CategoryController->index($request);
+        $category           = $CategoryController->index($request);
         return Inertia::render('admin/products/Products', [
             'products' => $this->index($request),
-            'category' => $category
+            'category' => $category,
         ]);
     }
 
@@ -56,6 +59,17 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        if (auth()->check()) {
+            RecentlyViewedProduct::updateOrCreate(
+                [
+                    'user_id'    => auth()->id(),
+                    'product_id' => $product->id,
+                ],
+                [
+                    'viewed_at' => now(),
+                ]
+            );
+        }
         $product->load(['images', 'reviews.user']);
         return new ProductDetailResource($product);
     }

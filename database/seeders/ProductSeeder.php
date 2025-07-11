@@ -18,18 +18,23 @@ class ProductSeeder extends Seeder
         Storage::disk('public')->deleteDirectory('products');
         Storage::disk('public')->deleteDirectory('categories');
         // https://dummyjson.com/products/categories -> name, slug, description, image
-        $categoryRequest = Http::get('https://dummyjson.com/products/categories');
+        $categoryRequest    = Http::get('https://dummyjson.com/products/categories');
         $productReviewCount = User::count();
         if ($categoryRequest->ok()) {
             $categories = $categoryRequest->json();
             foreach ($categories as $categoryJson) {
                 $categoryImage = null;
-                $category      = Category::create([
-                    'name'        => $categoryJson['name'],
-                    'slug'        => $categoryJson['slug'],
-                    'description' => "Sample product under the " . $categoryJson['name'] . " category.",
-                    'image'       => $categoryImage,
-                ]);
+                $category      = Category::createOrFirst(
+                    [
+                        'slug' => $categoryJson['slug'],
+                    ],
+                    [
+                        'name'        => $categoryJson['name'],
+                        'slug'        => $categoryJson['slug'],
+                        'description' => "Sample product under the " . $categoryJson['name'] . " category.",
+                        'image'       => $categoryImage,
+                    ]
+                );
                 $productsByCategoryRequest = Http::get($categoryJson['url']);
                 if ($productsByCategoryRequest->ok()) {
                     $products           = $productsByCategoryRequest->json();
@@ -49,13 +54,17 @@ class ProductSeeder extends Seeder
                             $category->image = $productImage;
                             $category->save();
                         }
-                        $product = Product::create([
+                        $discount = number_format((($mrp - $price) / $mrp) * 100);
+                        $product  = Product::createOrFirst([
+                            'slug' => Str::slug($productJson['title']) . '-' . rand(1000, 9999),
+                        ], [
                             'category_id'    => $category->id,
                             'name'           => ucwords($productJson['title']),
-                            'slug'           => Str::slug($productJson['title']) . '-' . rand(1000, 9999),
                             'description'    => $productJson['description'],
                             'price'          => $price,
                             'mrp'            => $mrp,
+                            'discount'       => $discount,
+                            'sales'          => fake()->numberBetween(1, 1000),
                             'stock_quantity' => fake()->numberBetween(0, 50),
                             'image'          => $productImage,
                             'is_featured'    => fake()->boolean(),
@@ -99,7 +108,7 @@ class ProductSeeder extends Seeder
                             ]);
 
                         }
-                        $allReviews = Review::where('product_id', $product->id)->get();
+                        $allReviews            = Review::where('product_id', $product->id)->get();
                         $product->rating       = round($allReviews->avg('rating'), 1);
                         $product->rating_count = $allReviews->count();
                         $product->save();
