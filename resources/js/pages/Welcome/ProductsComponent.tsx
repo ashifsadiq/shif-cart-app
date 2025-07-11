@@ -13,7 +13,7 @@ const ProductComponent: React.FC<Props> = ({ productData }) => {
                 <Link
                     href={route('product.productShow', { slug: product.slug })}
                     key={product.id}
-                    className="group bg-background relative flex md:flex-col justify-between overflow-hidden rounded border border-gray-200 shadow-sm transition-all hover:scale-101 hover:cursor-pointer hover:shadow-lg sm:rounded-2xl md:py-3"
+                    className="group bg-background relative flex md:flex-col justify-between overflow-hidden rounded border border-gray-200 shadow-sm transition-all hover:scale-101 hover:cursor-pointer hover:shadow-lg sm:rounded-2xl md:pb-3"
                 >
                     <img
                         src={product.image}
