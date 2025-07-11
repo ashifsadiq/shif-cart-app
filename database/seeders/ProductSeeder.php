@@ -19,6 +19,7 @@ class ProductSeeder extends Seeder
         Storage::disk('public')->deleteDirectory('categories');
         // https://dummyjson.com/products/categories -> name, slug, description, image
         $categoryRequest = Http::get('https://dummyjson.com/products/categories');
+        $productReviewCount = 399999;
         if ($categoryRequest->ok()) {
             $categories = $categoryRequest->json();
             foreach ($categories as $categoryJson) {
@@ -76,7 +77,7 @@ class ProductSeeder extends Seeder
                                 ]);
                             }
                         }
-                        $reviewCount = rand(0, 100);
+                        $reviewCount = rand((int) ($productReviewCount / 4), $productReviewCount);
                         for ($i = 1; $i <= $reviewCount; $i++) {
                             $user = User::inRandomOrder()->first();
 

@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        Storage::disk('public')->deleteDirectory('users');
         $userGenerateCount = fake()->numberBetween(5, 500);
         $gender            = fake()->randomElement(['male', 'female']);
         $picture           = null;
