@@ -16,7 +16,7 @@ class ProductDetailResource extends JsonResource
             'id'             => $this->id,
             'name'           => $this->name,
             'description'    => $this->description,
-            'price'          => round($price, 2),
+            'price' => number_format((float) $this->price, 2),
             'category'       => array_merge(
                 $this->category ? $this->category->toArray() : [],
                 [
@@ -41,7 +41,7 @@ class ProductDetailResource extends JsonResource
 
         if ($hasDiscount) {
             $discount         = (($mrp - $price) / $mrp) * 100;
-            $data['mrp']      = round($mrp, 2);
+            $data['mrp']      = number_format((float) $this->mrp, 2);
             $data['discount'] = round($discount);
         }
 

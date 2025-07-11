@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductDetailResource;
+use App\Http\Resources\ProductIndexResource;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -17,9 +18,12 @@ class WebRouteController extends Controller
     {
         $categoryPage = $request->input('category_page', 1);
         $productPage  = $request->input('product_page', 1);
+        $randomCount  = rand(5, 15); // e.g., fetch between 5 to 15 products
 
-        $productsData = ProductDetailResource::collection(Product::paginate(50, ['*'], 'product_page', $productPage));
-
+        $products = Product::inRandomOrder()
+            ->limit($randomCount)
+            ->get();
+        $productsData = ProductIndexResource::collection($products);
         return Inertia::render('Welcome/Welcome', [
             'categories' => Category::paginate(100, ['*'], 'category_page', $categoryPage),
             'products'   => $productsData,

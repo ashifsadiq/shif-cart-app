@@ -55,6 +55,7 @@ export default function Welcome(props: Props) {
 
             // Update your local product data here
             const productData = response.data;
+            console.log(productData.data)
             // Example: if you have useState for products:
             setProductsData({ ...productData, ...productData.meta });
         } catch (error) {

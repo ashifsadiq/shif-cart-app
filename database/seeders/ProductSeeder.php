@@ -33,7 +33,7 @@ class ProductSeeder extends Seeder
                 if ($productsByCategoryRequest->ok()) {
                     $products           = $productsByCategoryRequest->json();
                     $categoryImageIndex = fake()->numberBetween(0, count($products['products']) - 1);
-                    $dollarsValue       = fake()->numberBetween(75, 90);
+                    $dollarsValue       = fake()->numberBetween(1, 20);
                     foreach ($products['products'] as $productIndex => $productJson) {
                         $price        = $productJson['price'] * $dollarsValue;
                         $mrp          = $price / (1 - ($productJson['discountPercentage'] / 100));
@@ -96,7 +96,12 @@ class ProductSeeder extends Seeder
                                 ? fake()->sentence(rand(5, 20))
                                 : null,
                             ]);
+
                         }
+                        $allReviews = Review::where('product_id', $product->id)->get();
+                        $product->rating       = round($allReviews->avg('rating'), 1);
+                        $product->rating_count = $allReviews->count();
+                        $product->save();
                     }
                 } else {
                     $this->command->error('Failed to fetch products data for ' . $categoryJson['name']);

@@ -8,10 +8,10 @@ export interface Product {
     description: string;
     price: string;
     mrp: string;
-    rating: number;
-    rating_count: number;
+    review: number;
+    review_count: number;
     stock_quantity: number;
-    image: URL;
+    image: string;
     is_featured: boolean;
     available_from: string;
     available_to: string;

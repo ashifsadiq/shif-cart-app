@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $userGenerateCount = fake()->numberBetween(5, 20);
+        $userGenerateCount = fake()->numberBetween(5, 500);
         $gender            = fake()->randomElement(['male', 'female']);
         $picture           = null;
         while ($picture === null) {
