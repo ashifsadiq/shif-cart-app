@@ -26,9 +26,14 @@ class DashboardServices
     }
     public function categories(): Collection
     {
-        return Category::inRandomOrder()->limit(5)->get()
-            ->map(function ($product) {
-                return new CategoriesIndexResource($product);
+        return Category::inRandomOrder()
+            ->with(['products' => function ($query) {
+                $query->inRandomOrder()->limit(4);
+            }])
+            ->limit(5)
+            ->get()
+            ->map(function ($category) {
+                return new CategoriesIndexResource($category);
             });
     }
     public function topProducts(): Collection

@@ -8,38 +8,48 @@ use App\Http\Resources\ProductIndexResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\RecentlyViewedProduct;
+use App\Services\Products\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ProductController extends Controller
 {
+    protected $productService;
+    /**
+     * Create a new class instance.
+     */
+    public function __construct()
+    {
+        $this->productService = new ProductService();
+    }
     public function index(Request $request)
     {
-        $products       = Product::query();
-        $recentProducts = RecentlyViewedProduct::with('product')
-            ->where('user_id', auth()->id())
-            ->orderByDesc('viewed_at')
-            ->limit(10)
-            ->get()
-            ->pluck('product');
-        // Search functionality
-        if ($search = $request->query('search')) {
-            $products->where('name', 'like', "%{$search}%")
-                ->orWhere('description', 'like', "%{$search}%");
-        }
+        $data           = $this->productService->index($request);
+        //     $products       = Product::query();
+        // $recentProducts = RecentlyViewedProduct::with('product')
+        //     ->where('user_id', auth()->id())
+        //     ->orderByDesc('viewed_at')
+        //     ->limit(10)
+        //     ->get()
+        //     ->pluck('product');
+        // // Search functionality
+        // if ($search = $request->query('search')) {
+        //     $products->where('name', 'like', "%{$search}%")
+        //         ->orWhere('description', 'like', "%{$search}%");
+        // }
 
-        // Filtering by category
-        if ($category_id = $request->query('category_id')) {
-            $products->where('category_id', $category_id);
-        }
+        // // Filtering by category
+        // if ($category_id = $request->query('category_id')) {
+        //     $products->where('category_id', $category_id);
+        // }
 
-        // Sorting
-        if ($sortBy = $request->query('sortBy')) {
-            $sortOrder = $request->query('sortOrder', 'asc');
-            $products->orderBy($sortBy, $sortOrder);
-        }
-        return ProductIndexResource::collection($products->paginate(12));
+        // // Sorting
+        // if ($sortBy = $request->query('sortBy')) {
+        //     $sortOrder = $request->query('sortOrder', 'asc');
+        //     $products->orderBy($sortBy, $sortOrder);
+        // }
+        return $data;
     }
     public function adminIndex(Request $request)
     {
@@ -59,19 +69,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        if (auth()->check()) {
-            RecentlyViewedProduct::updateOrCreate(
-                [
-                    'user_id'    => auth()->id(),
-                    'product_id' => $product->id,
-                ],
-                [
-                    'viewed_at' => now(),
-                ]
-            );
-        }
-        $product->load(['images', 'reviews.user']);
-        return new ProductDetailResource($product);
+        return $this->productService->show($product);
     }
 
     public function update(ProductUpdateRequest $request, Product $product)

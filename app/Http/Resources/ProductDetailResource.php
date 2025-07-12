@@ -28,6 +28,7 @@ class ProductDetailResource extends JsonResource
             'images'         => $this->images->map(
                 fn($img) => $img->image ? asset("storage/{$img->image}") : asset('assets/img/no-image-available.png')
             ),
+            'cartItem' => $this->whenLoaded('cartItem', fn() => $this->cartItem?->quantity),
             'reviews'        => $this->reviews()
                 ->with('user')
                 ->orderBy('rating', 'desc')

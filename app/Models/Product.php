@@ -18,4 +18,13 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    // Product.php
+    public function cartItem()
+    {
+        $userId = auth('sanctum')->check()
+        ? auth('sanctum')->id()
+        : (auth('web')->id() ?? null);
+
+        return $this->hasOne(CartItem::class)->where('user_id', $userId);
+    }
 }

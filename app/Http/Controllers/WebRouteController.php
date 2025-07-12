@@ -6,15 +6,20 @@ use App\Http\Resources\ProductIndexResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\RecentlyViewedProduct;
+use App\Services\Products\ProductService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class WebRouteController extends Controller
 {
-    public function __construct(
-        private ProductController $productController,
-        private CategoryController $categoryController
-    ) {}
+    protected $productService;
+    /**
+     * Create a new class instance.
+     */
+    public function __construct()
+    {
+        $this->productService = new ProductService();
+    }
     public function index(Request $request)
     {
         $categoryPage = $request->input('category_page', 1);
@@ -26,27 +31,15 @@ class WebRouteController extends Controller
             ->get();
         $productsData = ProductIndexResource::collection($products);
         return Inertia::render('Welcome/Welcome', [
-            'categories'     => Category::paginate(100, ['*'], 'category_page', $categoryPage),
-            'products'       => $productsData,
+            'categories' => Category::paginate(100, ['*'], 'category_page', $categoryPage),
+            'products'   => $productsData,
         ]);
     }
     public function productShow(Request $request, $slug)
     {
         $product = Product::where('slug', $slug)->firstOrFail();
-        if (auth()->check()) {
-            RecentlyViewedProduct::updateOrCreate(
-                [
-                    'user_id'    => auth()->id(),
-                    'product_id' => $product->id,
-                ],
-                [
-                    'viewed_at' => now(),
-                ]
-            );
-        }
-        $product->load(['images', 'reviews.user', 'category']);
-        $data = (new ProductDetailResource($product))->resolve();
-        return Inertia::render('Product/ProductDetails', $data);
+        $show = $this->productService->show($product);
+        return Inertia::render('Product/ProductDetails', $show->toArray($request));
         // $product->image = $product->image ? asset("storage/{$product->image}") : null;
 
         // $category        = Category::find($product->category_id);

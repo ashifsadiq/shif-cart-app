@@ -18,7 +18,7 @@ const ProductComponent: React.FC<Props> = ({ productData }) => {
                     <img
                         src={product.image}
                         alt={product.name}
-                        className="md:6 h-56 w-[40%] md:w-full object-contain transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-102 lg:h-[400px] bg-foreground"
+                        className="md:6 h-56 w-[40%] md:w-full object-contain transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-102 lg:h-[400px] dark:bg-foreground"
                     />
                     <div className="flex flex-col justify-around px-2 md:px-4">
                         <h2 className="text-primary text-sm md:text-lg font-semibold">{product.name}</h2>

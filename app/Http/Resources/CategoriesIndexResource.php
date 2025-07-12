@@ -18,6 +18,7 @@ class CategoriesIndexResource extends JsonResource
             "name"        => $this->name,
             "slug"        => $this->slug,
             "description" => $this->description,
+            'products' => ProductIndexResource::collection($this->whenLoaded('products')),
             "image"       => $this->image ? asset("storage/{$this->image}") : asset('assets/img/no-image-available.png'),
             "created_at"  => $this->created_at,
             "updated_at"  => $this->updated_at,
