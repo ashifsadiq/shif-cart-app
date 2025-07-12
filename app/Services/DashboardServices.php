@@ -1,7 +1,6 @@
 <?php
 namespace App\Services;
 
-use App\Http\Resources\CategoriesIndexResource;
 use App\Http\Resources\ProductIndexResource;
 use App\Http\Resources\UserResource;
 use App\Models\Category;
@@ -33,7 +32,10 @@ class DashboardServices
             ->limit(5)
             ->get()
             ->map(function ($category) {
-                return new CategoriesIndexResource($category);
+                return [
+                    'name'   => $category->name,
+                    'images' => $category->products->pluck('image')->toArray(), // assuming 'image' column
+                ];
             });
     }
     public function topProducts(): Collection
