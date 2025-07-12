@@ -29,7 +29,7 @@ class DashboardServices
             ->with(['products' => function ($query) {
                 $query->inRandomOrder()->limit(4);
             }])
-            ->limit(5)
+            ->limit(6)
             ->get()
             ->map(function ($category) {
                 return [
