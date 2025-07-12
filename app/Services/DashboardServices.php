@@ -34,7 +34,9 @@ class DashboardServices
             ->map(function ($category) {
                 return [
                     'name'   => $category->name,
-                    'images' => $category->products->pluck('image')->toArray(), // assuming 'image' column
+                    'images' => $category->products->pluck('image')->map(function ($image) {
+                        return asset('storage/' . $image);
+                    })->toArray(),
                 ];
             });
     }
