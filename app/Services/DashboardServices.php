@@ -49,10 +49,12 @@ class DashboardServices
     }
     public function newItems(): Collection
     {
-        return Product::latest()->limit(5)->get()
-            ->map(function ($product) {
-                return new ProductIndexResource($product);
-            });
+        return Product::latest()
+            ->limit(50) // Get 50 latest products
+            ->get()
+            ->shuffle() // Shuffle them randomly
+            ->take(5)   // Pick 5 random from the latest 50
+            ->map(fn($product) => new ProductIndexResource($product));
     }
     public function flashSaleProducts(): Collection
     {
@@ -69,9 +71,9 @@ class DashboardServices
     }
     public function mostPopular(): Collection
     {
-        $mostPopular = Product::orderBy('sales', 'desc')->inRandomOrder()->limit(5)->get();
+        $topSelling = Product::orderBy('sales', 'desc')->limit(50)->get();
 
-        return $mostPopular->map(function ($product) {
+        return $topSelling->shuffle()->take(5)->map(function ($product) {
             return new ProductIndexResource($product);
         });
     }
