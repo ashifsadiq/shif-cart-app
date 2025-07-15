@@ -82,6 +82,7 @@ class DashboardServices
             ->map(function ($category) {
                 return [
                     'name'   => $category->name,
+                    'id'     => $category->id,
                     'images' => $category->products->pluck('image')->map(function ($image) {
                         return asset('storage/' . $image);
                     })->toArray(),
