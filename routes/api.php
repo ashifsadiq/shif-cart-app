@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 // optional auth
 Route::get('dashboard', [UserDashboard::class, 'dashboard']);
+Route::get('dashboard-detail/{typeData}', [UserDashboard::class, 'dashboardDetail']);
 Route::get('dashboard/profile', [UserDashboard::class, 'profile']);
 
 

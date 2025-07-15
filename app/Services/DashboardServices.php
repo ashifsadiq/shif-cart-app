@@ -23,6 +23,54 @@ class DashboardServices
     {
         //
     }
+    public function getAvailableDiscountBuckets(): array
+    {
+        $discounts = Product::select('discount')
+            ->where('discount', '>=', 10)
+            ->pluck('discount')
+            ->unique()
+            ->sort()
+            ->values();
+        $data      = [];
+        $discounts = $discounts->toArray();
+        for ($i = 1; $i <= 9; $i++) {
+            $array = [];
+            $start = $i * 10;
+            $end   = $start + 9;
+            foreach ($discounts as $key => $value) {
+                if (($value >= $start) && ($value <= $end)) {
+                    array_push($array, $value);
+                }
+            }
+            if (count($array)) {
+                array_push($data, $start);
+            }
+
+        }
+        return $data;
+    }
+    public function flashSaleProductsDetails(Request $request)
+    {
+        $selectedDiscount = $request->query('discount'); // ex: 10, 20, 30
+
+        $query = Product::query();
+        if ($selectedDiscount != null) {
+            for ($i = 1; $i <= 9; $i++) {
+                $start = $i * 10;
+                $end   = $start + 9;
+                if ($selectedDiscount == $start) {
+                    $query->whereBetween('discount', [$start, $end]);
+                }
+            }
+        }
+
+        $products = $query->latest()->paginate(10);
+        return response()->json([
+            'offers'   => $this->getAvailableDiscountBuckets(),
+            'products' => ProductIndexResource::collection($products),
+        ]);
+    }
+
     public function categories(): Collection
     {
         return Category::inRandomOrder()
@@ -62,7 +110,6 @@ class DashboardServices
             ->orderBy('rating', 'desc')
             ->orderBy('discount', 'desc')
             ->orderBy('sales', 'desc')
-            ->inRandomOrder()
             ->limit(5)
             ->get();
         return $flashSaleProducts->map(function ($product) {

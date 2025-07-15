@@ -7,6 +7,7 @@ use App\Models\ProductImage;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -15,6 +16,10 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Product::query()->truncate();
+        Category::query()->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Storage::disk('public')->deleteDirectory('products');
         Storage::disk('public')->deleteDirectory('categories');
         // https://dummyjson.com/products/categories -> name, slug, description, image
@@ -41,8 +46,12 @@ class ProductSeeder extends Seeder
                     $categoryImageIndex = fake()->numberBetween(0, count($products['products']) - 1);
                     $dollarsValue       = fake()->numberBetween(1, 20);
                     foreach ($products['products'] as $productIndex => $productJson) {
-                        $price        = $productJson['price'] * $dollarsValue;
-                        $mrp          = $price / (1 - ($productJson['discountPercentage'] / 100));
+                        $price    = $productJson['price'] * $dollarsValue;
+                        $discount = fake()->numberBetween(0, 99);
+                        $mrp      = $price / (1 - ($discount / 100));
+                        // $discount = number_format((($mrp - $price) / $mrp) * 10);
+                        // $mrp          = $price / (1 - ($productJson['discountPercentage'] / 100));
+                        // $discount = number_format((($mrp - $price) / $mrp) * 100);
                         $productImage = null;
                         while ($productImage === null) {
                             $productImage = $this->fetchAndSaveImage(
@@ -54,8 +63,7 @@ class ProductSeeder extends Seeder
                             $category->image = $productImage;
                             $category->save();
                         }
-                        $discount = number_format((($mrp - $price) / $mrp) * 100);
-                        $product  = Product::createOrFirst([
+                        $product = Product::createOrFirst([
                             'slug' => Str::slug($productJson['title']) . '-' . rand(1000, 9999),
                         ], [
                             'category_id'    => $category->id,

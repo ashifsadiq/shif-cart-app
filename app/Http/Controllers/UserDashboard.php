@@ -43,7 +43,14 @@ class UserDashboard extends Controller
 
         return response()->json($response);
     }
+    public function dashboardDetail(Request $request, $typeData)
+    {
+        if (! $typeData) {
+            return response()->json([]);
+        }
 
+        return response()->json( $this->dashboardServices->flashSaleProductsDetails($request));
+    }
     public function profile(Request $request)
     {
 
