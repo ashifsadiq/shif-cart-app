@@ -29,12 +29,13 @@ class UserSeeder extends Seeder
         }
 
         $this->command->info("Generate default user");
-        User::firstOrCreate(['email' => 'test@example.com'], [
+        $testUser = User::firstOrCreate(['email' => 'test@example.com'], [
             'name'              => fake()->name($gender),
             'password'          => Hash::make('password'),
             'picture'           => $picture,
             'email_verified_at' => now(),
         ]);
+        $this->userAddressGenerate($testUser, fake()->numberBetween(1, 10));
 
         for ($userIndex = 1; $userIndex <= $userGenerateCount; $userIndex++) {
             $this->command->info("-User $userIndex/$userGenerateCount");
@@ -57,17 +58,21 @@ class UserSeeder extends Seeder
             );
 
             $addressCount = fake()->numberBetween(1, 10);
-            for ($addrIndex = 1; $addrIndex <= $addressCount; $addrIndex++) {
-                $this->command->info("--Address $addrIndex/$addressCount");
-                Addresses::create([
-                    'user_id' => $createdUser->id,
-                    'name'    => fake()->name(),
-                    'phone'   => fake()->phoneNumber(),
-                    'address' => fake()->streetAddress(),
-                    'city'    => fake()->city(),
-                    'pincode' => fake()->postcode(),
-                ]);
-            }
+            $this->userAddressGenerate($createdUser, $addressCount);
+        }
+    }
+    private function userAddressGenerate($user, $addressCount = 1)
+    {
+        for ($addrIndex = 1; $addrIndex <= $addressCount; $addrIndex++) {
+            $this->command->info("--Address::create $addrIndex/$addressCount");
+            Addresses::create([
+                'user_id' => $user->id,
+                'name'    => fake()->name(),
+                'phone'   => fake()->phoneNumber(),
+                'address' => fake()->streetAddress(),
+                'city'    => fake()->city(),
+                'pincode' => fake()->postcode(),
+            ]);
         }
     }
     private function fetchAndSaveImage(string $folder, string $imageUrl): ?string
