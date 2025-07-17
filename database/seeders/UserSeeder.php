@@ -17,10 +17,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         User::query()->truncate();
         Addresses::query()->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Storage::disk('public')->deleteDirectory('users');
         $userGenerateCount = fake()->numberBetween(5, 50);
         $gender            = fake()->randomElement(['male', 'female']);
