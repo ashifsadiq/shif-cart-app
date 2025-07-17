@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('address');
             $table->string('state')->nullable();
             $table->string('city')->nullable();
+            $table->text('pincode');
             $table->timestamps();
         });
     }
