@@ -4,7 +4,6 @@ namespace Database\Seeders;
 use App\Models\Addresses;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -20,32 +19,38 @@ class UserSeeder extends Seeder
         User::query()->truncate();
         Addresses::query()->truncate();
         Storage::disk('public')->deleteDirectory('users');
+
         $userGenerateCount = fake()->numberBetween(5, 50);
         $gender            = fake()->randomElement(['male', 'female']);
         $picture           = null;
+
         while ($picture === null) {
             $picture = $this->fetchAndSaveImage('users', 'https://xsgames.co/randomusers/avatar.php?g=' . $gender);
         }
-        $this->command->info(string: "Generate default user");
+
+        $this->command->info("Generate default user");
         User::firstOrCreate(['email' => 'test@example.com'], [
             'name'              => fake()->name($gender),
             'password'          => Hash::make('password'),
             'picture'           => $picture,
             'email_verified_at' => now(),
         ]);
-        for ($i = 1; $i <= $userGenerateCount; $i++) {
+
+        for ($userIndex = 1; $userIndex <= $userGenerateCount; $userIndex++) {
             $this->command->info('GET:USER https://randomuser.me/api/');
-            $user = Http::get('https://randomuser.me/api/');
-            if ($user->ok()) {
-                $user    = $user->json();
-                $user    = $user['results'][0];
-                $name    = $user['name']['first'] . "" . $user['name']['last'];
-                $email   = $user['email'];
-                $gender  = $user['gender'];
-                $picture = null;
+            $response = Http::get('https://randomuser.me/api/');
+
+            if ($response->ok()) {
+                $userData = $response->json()['results'][0];
+                $name     = $userData['name']['first'] . ' ' . $userData['name']['last'];
+                $email    = $userData['email'];
+                $gender   = $userData['gender'];
+                $picture  = null;
+
                 while ($picture === null) {
                     $picture = $this->fetchAndSaveImage('users', 'https://xsgames.co/randomusers/avatar.php?g=' . $gender);
                 }
+
                 $createdUser = User::firstOrCreate(
                     ['email' => $email],
                     [
@@ -56,23 +61,26 @@ class UserSeeder extends Seeder
                         'email_verified_at' => now(),
                     ]
                 );
+
                 $addressCount = fake()->numberBetween(1, 5);
-                for ($i = 1; $i <= $addressCount; $i++) {
+
+                for ($addrIndex = 1; $addrIndex <= $addressCount; $addrIndex++) {
                     $this->command->info('GET:ADDRESS https://randomuser.me/api/');
-                    $user = Http::get('https://randomuser.me/api/');
-                    $user    = $user->json();
-                    $user    = $user['results'][0];
+                    $addressResponse = Http::get('https://randomuser.me/api/');
+                    $addressData     = $addressResponse->json()['results'][0];
+
                     Addresses::create([
                         'user_id' => $createdUser->id,
                         'name'    => $createdUser->name,
-                        'phone'   => $user['phone'],
-                        'address' => 'No. ' . $user['location']['street']['number'] . ' ' . $user['location']['street']['name'],
-                        'state'   => $user['location']['state'],
-                        'city'    => $user['location']['city'],
-                        'pincode' => $user['location']['postcode'],
+                        'phone'   => $addressData['phone'],
+                        'address' => 'No. ' . $addressData['location']['street']['number'] . ' ' . $addressData['location']['street']['name'],
+                        'state'   => $addressData['location']['state'],
+                        'city'    => $addressData['location']['city'],
+                        'pincode' => $addressData['location']['postcode'],
                     ]);
                 }
-                $this->command->info("Generated $email - $name | $i / $userGenerateCount");
+
+                $this->command->info("Generated $email - $name | $userIndex / $userGenerateCount");
             }
         }
     }
