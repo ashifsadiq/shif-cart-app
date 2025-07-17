@@ -16,8 +16,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::query()->truncate();
-        Addresses::query()->truncate();
+        // User::query()->truncate();
+        // Addresses::query()->truncate();
         Storage::disk('public')->deleteDirectory('users');
 
         $userGenerateCount = fake()->numberBetween(5, 50);
@@ -38,50 +38,38 @@ class UserSeeder extends Seeder
 
         for ($userIndex = 1; $userIndex <= $userGenerateCount; $userIndex++) {
             $this->command->info('GET:USER https://randomuser.me/api/');
-            $response = Http::get('https://randomuser.me/api/');
-
-            if ($response->ok()) {
-                $userData = $response->json()['results'][0];
-                $name     = $userData['name']['first'] . ' ' . $userData['name']['last'];
-                $email    = $userData['email'];
-                $gender   = $userData['gender'];
-                $picture  = null;
-
-                while ($picture === null) {
-                    $picture = $this->fetchAndSaveImage('users', 'https://xsgames.co/randomusers/avatar.php?g=' . $gender);
-                }
-
-                $createdUser = User::firstOrCreate(
-                    ['email' => $email],
-                    [
-                        'name'              => $name,
-                        'password'          => Hash::make('password'),
-                        'role'              => 'customer',
-                        'picture'           => $picture,
-                        'email_verified_at' => now(),
-                    ]
-                );
-
-                $addressCount = fake()->numberBetween(1, 5);
-
-                for ($addrIndex = 1; $addrIndex <= $addressCount; $addrIndex++) {
-                    $this->command->info('GET:ADDRESS https://randomuser.me/api/');
-                    $addressResponse = Http::get('https://randomuser.me/api/');
-                    $addressData     = $addressResponse->json()['results'][0];
-
-                    Addresses::create([
-                        'user_id' => $createdUser->id,
-                        'name'    => $createdUser->name,
-                        'phone'   => $addressData['phone'],
-                        'address' => 'No. ' . $addressData['location']['street']['number'] . ' ' . $addressData['location']['street']['name'],
-                        'state'   => $addressData['location']['state'],
-                        'city'    => $addressData['location']['city'],
-                        'pincode' => $addressData['location']['postcode'],
-                    ]);
-                }
-
-                $this->command->info("Generated $email - $name | $userIndex / $userGenerateCount");
+            $gender  = fake()->randomElement(['male', 'female']);
+            $name    = fake()->name();
+            $email   = fake()->safeEmail();
+            $picture = null;
+            while ($picture === null) {
+                $picture = $this->fetchAndSaveImage('users', 'https://xsgames.co/randomusers/avatar.php?g=' . $gender);
             }
+            $createdUser = User::firstOrCreate(
+                ['email' => $email],
+                [
+                    'name'              => $name,
+                    'password'          => Hash::make('password'),
+                    'role'              => 'customer',
+                    'picture'           => $picture,
+                    'email_verified_at' => now(),
+                ]
+            );
+
+            $addressCount = fake()->numberBetween(1, 10);
+            for ($addrIndex = 1; $addrIndex <= $addressCount; $addrIndex++) {
+                $this->command->info('GET:ADDRESS https://randomuser.me/api/');
+                Addresses::create([
+                    'user_id' => $createdUser->id,
+                    'name'    => fake()->name(),
+                    'phone'   => fake()->phoneNumber(),
+                    'address' => fake()->streetAddress(),
+                    'city'    => fake()->city(),
+                    'pincode' => fake()->postcode(),
+                ]);
+            }
+
+            $this->command->info("Generated $email - $name | $userIndex / $userGenerateCount");
         }
     }
     private function fetchAndSaveImage(string $folder, string $imageUrl): ?string
