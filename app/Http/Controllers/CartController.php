@@ -77,7 +77,7 @@ class CartController extends Controller
 
         return response()->json([
             'items' => CartItemIndexResource::collection($cartItems),
-            'total' => round($total, 2), // 2 decimal precision
+            'total' => number_format($total, 2, '.', ','), // 2 decimal precision
         ]);
     }
 }
