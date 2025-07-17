@@ -9,7 +9,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        return new UserResource(User::paginate());
+        return UserResource::collection(User::paginate());
     }
     public function show(User $user)
     {

@@ -26,7 +26,7 @@ class CartController extends Controller
         $item->quantity += $qty;
         $item->save();
 
-        return response()->json(['message' => 'Added to cart','item'    => $item,]);
+        return response()->json(['message' => 'Added to cart', 'item' => $item]);
     }
     public function update(Request $request)
     {}
@@ -53,7 +53,9 @@ class CartController extends Controller
             $message = 'Cart item quantity reduced by 1.';
         } else {
             $item->delete();
-            $item = null;
+            $item = [
+                'quantity' => 0,
+            ];
             $message = 'Cart item removed completely.';
         }
 

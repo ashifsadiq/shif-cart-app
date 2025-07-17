@@ -31,6 +31,8 @@ Route::get('dashboard', [UserDashboard::class, 'dashboard']);
 Route::get('dashboard-detail/{typeData}', [UserDashboard::class, 'dashboardDetail']);
 Route::get('dashboard/profile', [UserDashboard::class, 'profile']);
 
+// temp route
+Route::apiResource('users', UserController::class);
 
 Route::apiResource('products', ProductController::class)->only(PUBLIC_METHODS);
 Route::apiResource('categories', CategoryController::class)->only(PUBLIC_METHODS);
@@ -47,7 +49,7 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin'])->group(fun
     Route::apiResource('comments', CommentController::class);
 
     // Admin/User management routes (with proper authorization)
-    Route::apiResource('users', UserController::class)->except(['store']);
+    // Route::apiResource('users', UserController::class)->except(['store']);
     Route::middleware('can:manage-users')->group(function () {
     });
     // ... more admin routes
