@@ -102,7 +102,9 @@ class CartController extends Controller
         }
 
         // Prepare the response array dynamically
-        $responseData = [];
+        $responseData = [
+            'no_of_items'=>$cartItems->count()
+        ];
 
         if ($cartItems && ! $getOnlyTotal) { // If items were fetched and total_only is not true
             $responseData['items'] = CartItemIndexResource::collection($cartItems);
