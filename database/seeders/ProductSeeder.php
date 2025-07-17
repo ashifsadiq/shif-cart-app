@@ -16,8 +16,8 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        Product::query()->truncate();
-        Category::query()->truncate();
+        // Product::query()->truncate();
+        // Category::query()->truncate();
         Storage::disk('public')->deleteDirectory('products');
         Storage::disk('public')->deleteDirectory('categories');
         // https://dummyjson.com/products/categories -> name, slug, description, image
