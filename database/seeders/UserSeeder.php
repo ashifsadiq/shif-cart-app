@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
         ]);
 
         for ($userIndex = 1; $userIndex <= $userGenerateCount; $userIndex++) {
-            $this->command->info('GET:USER https://randomuser.me/api/');
+            $this->command->info("-User $userIndex/$userGenerateCount");
             $gender  = fake()->randomElement(['male', 'female']);
             $name    = fake()->name();
             $email   = fake()->safeEmail();
@@ -58,7 +58,7 @@ class UserSeeder extends Seeder
 
             $addressCount = fake()->numberBetween(1, 10);
             for ($addrIndex = 1; $addrIndex <= $addressCount; $addrIndex++) {
-                $this->command->info('GET:ADDRESS https://randomuser.me/api/');
+                $this->command->info("--Address $addrIndex/$addressCount");
                 Addresses::create([
                     'user_id' => $createdUser->id,
                     'name'    => fake()->name(),
@@ -68,8 +68,6 @@ class UserSeeder extends Seeder
                     'pincode' => fake()->postcode(),
                 ]);
             }
-
-            $this->command->info("Generated $email - $name | $userIndex / $userGenerateCount");
         }
     }
     private function fetchAndSaveImage(string $folder, string $imageUrl): ?string
