@@ -66,18 +66,62 @@ class CartController extends Controller
     }
     public function getCart(Request $request)
     {
-        $cartItems = CartItem::with('product')
-            ->where('user_id', auth()->id())
-            ->latest()
-            ->get();
+        // Get query parameters
+        $getOnlyTotal = $request->query('total_only');
+        $getOnlyItems = $request->query('items_only');
 
-        $total = $cartItems->sum(function ($item) {
-            return $item->quantity * ($item->product->price ?? 0);
-        });
+        // Initialize variables for response data
+        $cartItems = null;
+        $total     = null;
 
-        return response()->json([
-            'items' => CartItemIndexResource::collection($cartItems),
-            'total' => number_format($total, 2, '.', ','), // 2 decimal precision
-        ]);
+        // Fetch cart items only if 'items_only' is not requested OR
+        // if neither 'total_only' nor 'items_only' are requested (i.e., return all)
+        if (! $getOnlyTotal || $getOnlyItems) {
+            $cartItems = CartItem::with('product')
+                ->where('user_id', auth()->id())
+                ->latest()
+                ->get();
+        }
+
+        // Calculate total only if 'total_only' is requested OR
+        // if neither 'total_only' nor 'items_only' are requested (i.e., return all)
+        if (! $getOnlyItems || $getOnlyTotal) {
+            // If cartItems were not fetched already (because only total was requested), fetch them now.
+            // This avoids fetching them twice if both are requested, and ensures they are fetched if only total is needed.
+            if (is_null($cartItems)) {
+                $cartItems = CartItem::with('product')
+                    ->where('user_id', auth()->id())
+                    ->latest()
+                    ->get();
+            }
+
+            $total = $cartItems->sum(function ($item) {
+                // Ensure product exists before accessing price
+                return $item->quantity * ($item->product->price ?? 0);
+            });
+        }
+
+        // Prepare the response array dynamically
+        $responseData = [];
+
+        if ($cartItems && ! $getOnlyTotal) { // If items were fetched and total_only is not true
+            $responseData['items'] = CartItemIndexResource::collection($cartItems);
+        }
+
+        if (! is_null($total) && ! $getOnlyItems) { // If total was calculated and items_only is not true
+            $responseData['total'] = number_format($total, 2, '.', ',');
+        }
+
+        // If no specific request (e.g., neither total_only nor items_only), ensure both are returned
+        if (! $getOnlyTotal && ! $getOnlyItems) {
+            if (empty($responseData['items']) && ! is_null($cartItems)) { // Ensure items are there if not already added
+                $responseData['items'] = CartItemIndexResource::collection($cartItems);
+            }
+            if (empty($responseData['total']) && ! is_null($total)) { // Ensure total is there if not already added
+                $responseData['total'] = number_format($total, 2, '.', ',');
+            }
+        }
+
+        return response()->json($responseData);
     }
 }
