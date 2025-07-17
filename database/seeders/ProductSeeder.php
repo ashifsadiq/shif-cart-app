@@ -16,10 +16,8 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Product::query()->truncate();
         Category::query()->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Storage::disk('public')->deleteDirectory('products');
         Storage::disk('public')->deleteDirectory('categories');
         // https://dummyjson.com/products/categories -> name, slug, description, image
