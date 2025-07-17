@@ -1,7 +1,7 @@
 <?php
 namespace Database\Seeders;
 
-use App\Models\Address;
+use App\Models\Addresses;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         User::query()->truncate();
-        Address::query()->truncate();
+        Addresses::query()->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Storage::disk('public')->deleteDirectory('users');
         $userGenerateCount = fake()->numberBetween(5, 50);
@@ -64,7 +64,7 @@ class UserSeeder extends Seeder
                     $user = Http::get('https://randomuser.me/api/');
                     $user    = $user->json();
                     $user    = $user['results'][0];
-                    Address::create([
+                    Addresses::create([
                         'user_id' => $createdUser->id,
                         'name'    => $createdUser->name,
                         'phone'   => $user['phone'],
