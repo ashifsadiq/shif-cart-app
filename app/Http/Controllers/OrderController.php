@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\OrderIndexResource;
+use App\Models\Addresses;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -15,19 +17,41 @@ class OrderController extends Controller
     {
         $orders = Order::where('user_id', auth()->id())
             ->latest()
-            // ->with(['items.product']) // eager load
+            ->withCount(['items']) // eager load
             ->paginate(10);
 
-        return OrderIndexResource::collection($orders);
+        return OrderDetailResource::collection($orders);
     }
-    public function show(Request $request)
+    public function show(Request $request, $orderId)
     {
-        return [];
+        $order = Order::where('id', $orderId)
+            ->where('user_id', auth()->id())
+            ->withCount('items')
+            ->firstOrFail();
+
+        // Paginate the items with product
+        $items = $order->items()->with('product')->paginate(10);
+
+        return [
+            'order' => new OrderDetailResource($order),
+            'items' => OrderIndexResource::collection($items)->response()->getData(true),
+        ];
     }
     public function store(Request $request)
     {
         $user = $request->user();
-
+        $request->validate([
+            'address_id' => [
+                'required',
+                'integer',
+                function ($attribute, $value, $fail) {
+                    $userId = auth()->id(); // or $request->user()->id;
+                    if (! Addresses::where('id', $value)->where('user_id', $userId)->exists()) {
+                        $fail('The selected address is invalid.');
+                    }
+                },
+            ],
+        ]);
         // Load cart with product prices
         $cartItems = CartItem::with('product')
             ->where('user_id', $user->id)
@@ -51,7 +75,7 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_id'      => $user->id,
                 'order_number' => strtoupper(Str::random(10)),
-                'status'       => 'pending',
+                'status'       => 'placed', // for now
                 'amount'       => $amount,
                 'total'        => $amount, // Add tax/discount if needed
             ]);
