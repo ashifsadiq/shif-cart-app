@@ -1,11 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ProductDetailResource;
 use App\Http\Resources\ProductIndexResource;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\RecentlyViewedProduct;
+use App\Services\DashboardServices;
 use App\Services\Products\ProductService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,12 +12,14 @@ use Inertia\Inertia;
 class WebRouteController extends Controller
 {
     protected $productService;
+    protected $dashboardServices;
     /**
      * Create a new class instance.
      */
     public function __construct()
     {
-        $this->productService = new ProductService();
+        $this->dashboardServices = new DashboardServices();
+        $this->productService    = new ProductService();
     }
     public function index(Request $request)
     {
@@ -38,8 +39,9 @@ class WebRouteController extends Controller
     public function productShow(Request $request, $slug)
     {
         $product = Product::where('slug', $slug)->firstOrFail();
-        $show = $this->productService->show($product);
-        return Inertia::render('Product/ProductDetails', $show->toArray($request));
+        $show    = $this->productService->show($product)->toArray($request);
+        $productService = $this->productService->show($product);
+        return Inertia::render('Product/ProductDetails', $productService->toArray($request));
         // $product->image = $product->image ? asset("storage/{$product->image}") : null;
 
         // $category        = Category::find($product->category_id);

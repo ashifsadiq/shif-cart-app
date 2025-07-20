@@ -5,7 +5,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = [
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_PLACED  = 'placed';
+    protected $fillable         = [
         'user_id',
         'order_number',
         'status',

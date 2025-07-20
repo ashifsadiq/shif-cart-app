@@ -31,7 +31,6 @@ function SimpleSlider() {
                     ))}
             </Slider>
 
-            {/* Arrow buttons */}
             <div className="absolute top-1/2 right-0 left-0 z-10 flex -translate-y-1/2 justify-between px-4">
                 <button
                     onClick={() => {

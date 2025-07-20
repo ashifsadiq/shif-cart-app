@@ -1,25 +1,26 @@
 import { User } from ".";
 
 export interface Product {
-    id: number;
-    category_id: number;
-    name: string;
-    slug: string;
-    description: string;
-    price: string;
-    mrp: string;
-    review: number;
-    review_count: number;
-    stock_quantity: number;
-    image: string;
-    is_featured: boolean;
-    available_from: string;
-    available_to: string;
-    discount_expires_at: string;
-    weight: number;
-    dimensions: string;
-    created_at: string;
-    updated_at: string;
+    id?: number;
+    category_id?: number;
+    name?: string;
+    slug?: string;
+    description?: string;
+    price?: string;
+    mrp?: string;
+    review?: number;
+    review_count?: number;
+    stock_quantity?: number;
+    cartItem?: number;
+    image?: string;
+    is_featured?: boolean;
+    available_from?: string;
+    available_to?: string;
+    discount_expires_at?: string;
+    weight?: number;
+    dimensions?: string;
+    created_at?: string;
+    updated_at?: string;
 }
 export interface ProductPagination {
     data: Product[];
@@ -35,7 +36,7 @@ export interface Category {
     updated_at: string;
 }
 export interface CategoryPagination {
-    data: Product[];
+    data: Category[];
     current_page: Number;
 }
 export interface ProductImage {

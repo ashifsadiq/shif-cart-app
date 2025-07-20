@@ -1,49 +1,104 @@
-import ReviewStart from '@/components/review-star';
-import { Product } from '@/types/product';
-import { Link } from '@inertiajs/react';
 import React from 'react';
-type Props = {
-    productData: Product[];
-};
+import { Link } from '@inertiajs/react';
+import ReviewStar from '@/components/review-star';
+import { Product } from '@/types/product';
 
-const ProductComponent: React.FC<Props> = ({ productData }) => {
+/* ---------- Types ------------------------------------------------------- */
+interface Props {
+    productData: Product[];
+}const ProductGrid: React.FC<Props> = ({ productData }) => {
     return (
-        <div className="grid w-full grid-cols-1 gap-0 px-1 sm:gap-6 md:grid-cols-3 md:px-4 xl:grid-cols-4">
-            {productData.map((product) => (
-                <Link
-                    href={route('product.productShow', { slug: product.slug })}
-                    key={product.id}
-                    className="group bg-background relative flex md:flex-col justify-between overflow-hidden rounded border border-gray-200 shadow-sm transition-all hover:scale-101 hover:cursor-pointer hover:shadow-lg sm:rounded-2xl md:pb-3"
-                >
-                    <img
-                        src={product.image}
-                        alt={product.name}
-                        className="md:6 h-56 w-[40%] md:w-full object-contain transition-transform duration-300 group-hover:scale-105 md:group-hover:scale-102 lg:h-[400px] dark:bg-foreground"
-                    />
-                    <div className="flex flex-col justify-around px-2 md:px-4">
-                        <h2 className="text-primary text-sm md:text-lg font-semibold">{product.name}</h2>
-                        <div className="flex items-center gap-0.5 text-sm text-muted-foreground">
-                            <span>{product.review}</span>
-                            <div className="flex items-center">
-                                <ReviewStart initialValue={product.review} />
+        <section
+            aria-label="Product list"
+            className="grid w-full grid-cols-1 gap-x-4 gap-y-6 px-1
+                 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4
+                 sm:px-3 md:px-4"
+        >
+            {productData.map(
+                ({
+                    id,
+                    slug,
+                    image,
+                    name,
+                    review,
+                    review_count,
+                    description,
+                    price,
+                }) => (
+                    <Link
+                        key={id}
+                        href={route('product.productShow', { slug })}
+                        prefetch={true}
+                        className="group relative flex flex-col overflow-hidden
+                       rounded-lg border border-border/40 bg-background
+                       shadow-sm transition
+                       hover:shadow-md motion-safe:hover:scale-[1.02]
+                       focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                        {/* ---------- Image ---------- */}
+                        <img
+                            src={image}
+                            alt={name}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-56 w-full object-contain bg-foreground/5
+                         transition-transform duration-300
+                         motion-safe:group-hover:scale-105
+                         lg:h-72"
+                        />
+
+                        {/* ---------- Details ---------- */}
+                        <div className="flex grow flex-col gap-2 p-3 sm:p-4">
+                            <h2
+                                className="line-clamp-2 text-sm font-semibold text-primary
+                           md:text-base"
+                            >
+                                {name}
+                            </h2>
+
+                            {/* Rating */}
+                            <div
+                                className="flex items-center gap-1 text-xs text-muted-foreground
+                           md:text-sm"
+                            >
+                                <span>{review.toFixed(1)}</span>
+                                <ReviewStar initialValue={review} />
+                                <span aria-label={`${review_count} reviews`}>
+                                    ({review_count})
+                                </span>
                             </div>
-                            <span>({product.review_count})</span>
-                        </div>
-                        <p className="line-clamp-2 text-sm text-gray-500">{product.description || 'No description available.'}</p>
-                        <div className="gap-y-2 pb-2 sm:flex-row md:items-center">
-                            <div className="space-x-1">
-                                <span className="text-primary text-xl md:text-2xl font-semibold">₹{product.price ?? 'N/A'}</span>
-                                <span className="text-muted-foreground text-sm md:text-base line-through">₹{product.price ?? 'N/A'}</span>
+
+                            {/* Description */}
+                            <p className="line-clamp-2 text-xs text-muted-foreground">
+                                {description || 'No description available.'}
+                            </p>
+
+                            {/* Price */}
+                            <div className="mt-auto flex items-center gap-2">
+                                <span className="text-lg font-semibold text-primary">
+                                    ₹{price}
+                                </span>
+                                <span className="text-xs line-through text-muted-foreground">
+                                    ₹{price}
+                                </span>
+                            </div>
+
+                            {/* CTA */}
+                            <div
+                                className="flex items-center justify-center rounded-full
+                           border border-border py-1 text-xs
+                           transition-colors
+                           hover:bg-accent hover:text-accent-foreground
+                           md:text-sm"
+                            >
+                                See options
                             </div>
                         </div>
-                        <div className="flex justify-center items-center border border-card-foreground py-1 rounded-full">
-                            <span className="text-sm md:text-base">See Options</span>
-                        </div>
-                    </div>
-                </Link>
-            ))}
-        </div>
+                    </Link>
+                )
+            )}
+        </section>
     );
 };
 
-export default ProductComponent;
+export default ProductGrid;

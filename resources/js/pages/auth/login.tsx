@@ -29,8 +29,13 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     });
 
     const submit: FormEventHandler = (e) => {
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect');
         e.preventDefault();
-        post(route('login'), {
+        post(route('login', {
+            ...data,
+            redirect
+        }), {
             onFinish: () => reset('password'),
         });
     };

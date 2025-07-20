@@ -3,7 +3,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\OrderIndexResource;
-use App\Models\Addresses;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -17,41 +16,72 @@ class OrderController extends Controller
     {
         $orders = Order::where('user_id', auth()->id())
             ->latest()
-            ->withCount(['items']) // eager load
+            ->withCount(['items'])
             ->paginate(10);
 
-        return OrderDetailResource::collection($orders);
+        $ordersResource = OrderDetailResource::collection($orders);
+
+        if ($request->wantsJson()) {
+            // Return as JSON API resource (includes pagination meta)
+            return $ordersResource;
+        }
+
+        // For Inertia: supply as props (data + pagination)
+        return inertia('Orders/OrdersList', [
+            'orders' => OrderDetailResource::collection($orders),
+        ]);
     }
     public function show(Request $request, $orderId)
-    {
-        $order = Order::where('id', $orderId)
-            ->where('user_id', auth()->id())
-            ->withCount('items')
-            ->firstOrFail();
+    {$order = null;
+        if ($request->wantsJson()) {
+            $order = Order::where('id', $orderId)
+                ->where('user_id', auth()->id())
+                ->withCount('items')
+                ->firstOrFail();
+        } else {
+            $order = Order::where('order_number', $orderId)
+                ->where('user_id', auth()->id())
+                ->withCount('items')
+                ->firstOrFail();
+        }
 
         // Paginate the items with product
         $items = $order->items()->with('product')->paginate(10);
-
-        return [
-            'order' => new OrderDetailResource($order),
-            'items' => OrderIndexResource::collection($items)->response()->getData(true),
-        ];
-    }
+        if ($request->wantsJson()) {
+            // Return JSON API response (mobile app, external API, etc.)
+            return [
+                'order' => new OrderDetailResource($order),
+                'items' => OrderIndexResource::collection($items->getCollection())
+                    ->response()
+                    ->getData(true),
+                // Include pagination metadata
+                'meta'  => [
+                    'has_pages'    => $items->hasPages(),
+                    'current_page' => $items->currentPage(),
+                    'last_page'    => $items->lastPage(),
+                ],
+            ];
+        }
+        return inertia('Orders/OrderDetails', [
+            'order'      => [
+                'id'           => $order->id,
+                'order_number' => $order->order_number,
+                'status'       => $order->status,
+                'created_at'   => $order->created_at,
+                'items_count'  => $order->items_count,
+                // ...other order fields
+            ],
+            'items'      => OrderIndexResource::collection($items->getCollection()),
+            // Optional: Explicit pagination metadata
+            'items_meta' => [
+                'has_pages'    => $items->hasPages(),
+                'current_page' => $items->currentPage(),
+                'last_page'    => $items->lastPage(),
+            ],
+        ]);}
     public function store(Request $request)
     {
         $user = $request->user();
-        $request->validate([
-            'address_id' => [
-                'required',
-                'integer',
-                function ($attribute, $value, $fail) {
-                    $userId = auth()->id(); // or $request->user()->id;
-                    if (! Addresses::where('id', $value)->where('user_id', $userId)->exists()) {
-                        $fail('The selected address is invalid.');
-                    }
-                },
-            ],
-        ]);
         // Load cart with product prices
         $cartItems = CartItem::with('product')
             ->where('user_id', $user->id)
@@ -75,7 +105,6 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_id'      => $user->id,
                 'order_number' => strtoupper(Str::random(10)),
-                'status'       => 'placed', // for now
                 'amount'       => $amount,
                 'total'        => $amount, // Add tax/discount if needed
             ]);

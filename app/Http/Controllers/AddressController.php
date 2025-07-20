@@ -8,6 +8,6 @@ class AddressController extends Controller
 {
     public function userAddress(Request $request)
     {
-        return Addresses::where('user_id', auth()->user()->id)->paginate();
+        return Addresses::where('user_id', auth()->user()->id)->paginate(6);
     }
 }

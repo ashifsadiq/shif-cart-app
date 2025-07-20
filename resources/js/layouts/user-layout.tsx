@@ -15,13 +15,13 @@ interface AppLayoutProps {
 }
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 export default ({ children, breadcrumbs, className, ...props }: AppLayoutProps) => {
-    const title = props.customTitle ? props.customTitle : `${props.title} - ${appName}`;
+    const title = props.customTitle ? props.customTitle : props.title? `${props.title} - ${appName}`: appName;
     return (
         <div>
             <Head title={title}>
                 {props.description && <meta name="description" content={props.description} />}
             </Head>
-            <Navbar />
+            <Navbar cartItems={10} />
             <div className={cn(className)}>{children}</div>
         </div>
     );

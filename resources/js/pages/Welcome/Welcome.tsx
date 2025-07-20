@@ -15,7 +15,6 @@ export default function Welcome(props: Props) {
     const { categories, products } = props;
     const [productsData, setProductsData] = useState({ ...products });
     const [currentCategoryId, setCurrentCategoryId] = useState<number | null>(null);
-    const [isProductLoading, setIsProductLoading] = useState(!false);
 
     // Pagination: Categories
     const goToCategoryPage = (page: number) => {
@@ -55,18 +54,12 @@ export default function Welcome(props: Props) {
 
             // Update your local product data here
             const productData = response.data;
-            console.log(productData.data)
-            // Example: if you have useState for products:
             setProductsData({ ...productData, ...productData.meta });
         } catch (error) {
             console.error('Failed to fetch products:', error);
         }
     };
 
-    useEffect(() => {
-        console.table(products);
-        // Future logic for when currentCategoryId changes
-    }, []);
     // Object.keys
     return (
         <UserLayout title="Welcome" description="Welcome to our online store! Explore a wide range of products and categories.">

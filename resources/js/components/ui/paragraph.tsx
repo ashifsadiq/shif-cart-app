@@ -1,63 +1,86 @@
-import { cn } from '@/lib/utils';
-import React, { useEffect, useRef, useState, HTMLProps } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils'; // Assuming you have a utility for className merging
 
-type ParagraphProps = React.HTMLAttributes<HTMLHeadingElement> & {
+interface ParagraphProps extends React.HTMLAttributes<HTMLParagraphElement> {
   children?: React.ReactNode;
   style?: React.CSSProperties;
-  className?: HTMLProps<HTMLElement>['className'];
+  className?: string;
   maxNumberOfLines?: number;
   lineClampEnable?: boolean;
-};
+  showToggleAlways?: boolean; // Optional: always show toggle button regardless of overflow
+}
 
-const Paragraph = ({
+const Paragraph: React.FC<ParagraphProps> = ({
   children,
   style,
   className,
   maxNumberOfLines = 3,
-  lineClampEnable=false,
+  lineClampEnable = false,
+  showToggleAlways = false,
   ...props
-}: ParagraphProps) => {
+}) => {
+  // Handle cases where children might be null/undefined
+  if (!children) return null;
+
   const paragraphRef = useRef<HTMLParagraphElement>(null);
   const [isClamped, setIsClamped] = useState(true);
   const [showToggle, setShowToggle] = useState(false);
+  const [contentHeight, setContentHeight] = useState(0);
+  const [lineHeight, setLineHeight] = useState(20); // Default line height fallback
 
+  // Measure content height and line height
   useEffect(() => {
     const p = paragraphRef.current;
-    if (!p || !maxNumberOfLines) return;
+    if (!p || !lineClampEnable) return;
 
-    const fullHeight = p.scrollHeight;
-    const lineHeight = parseInt(window.getComputedStyle(p).lineHeight || '20', 10);
-    const maxHeight = lineHeight * maxNumberOfLines;
-
-    if (fullHeight > maxHeight) {
+    const computedStyle = window.getComputedStyle(p);
+    const lh = parseFloat(computedStyle.lineHeight) || 20;
+    setLineHeight(lh);
+    const height = p.scrollHeight;
+    setContentHeight(height);
+    
+    const maxHeight = lh * maxNumberOfLines;
+    if (height > maxHeight || showToggleAlways) {
       setShowToggle(true);
+    } else {
+      setShowToggle(false);
     }
-  }, [children, maxNumberOfLines]);
+  }, [children, maxNumberOfLines, lineClampEnable, showToggleAlways]);
+
+  const handleToggle = () => {
+    setIsClamped(prev => !prev);
+  };
+
+  const maxHeight = lineHeight * maxNumberOfLines;
 
   return (
-    <div>
+    <div className="relative">
       <p
         ref={paragraphRef}
         style={{
           ...style,
           display: '-webkit-box',
-          WebkitLineClamp: isClamped ? maxNumberOfLines : undefined,
+          WebkitLineClamp: lineClampEnable && isClamped ? maxNumberOfLines : undefined,
           WebkitBoxOrient: 'vertical',
-          overflow: isClamped ? 'hidden' : undefined,
+          overflow: lineClampEnable && isClamped ? 'hidden' : undefined,
+          transition: 'max-height 0.3s ease, -webkit-line-clamp 0.3s ease',
         }}
-        {...props}
+        aria-expanded={lineClampEnable ? String(!isClamped) : undefined}
+        aria-label={typeof children === 'string' ? children : undefined}
         className={cn(
           'text-[15px] md:text-[17px] lg:text-[19px]',
           lineClampEnable && isClamped ? 'line-clamp' : '',
           className
         )}
+        {...props}
       >
         {children}
       </p>
       {lineClampEnable && showToggle && (
         <button
-          className="text-blue-500 mt-1 text-sm underline"
-          onClick={() => setIsClamped(!isClamped)}
+          aria-label={isClamped ? 'See more' : 'See less'}
+          className="mt-2 inline-block text-sm text-blue-600 underline focus:outline-none focus:ring-2 focus:ring-blue-300 rounded"
+          onClick={handleToggle}
         >
           {isClamped ? 'See more' : 'See less'}
         </button>
