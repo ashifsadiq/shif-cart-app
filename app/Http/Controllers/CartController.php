@@ -16,7 +16,8 @@ class CartController extends Controller
 {
     public function proceedOrder(Request $request,$order_number)
     {
-        $address = new AddressController()->userAddress($request);
+        $addressController = new AddressController();
+        $address = $addressController->userAddress($request);
         return Inertia::render('Cart/ProceedOrder', [
             'address' => $address,
             'order_id'=>$order_number
