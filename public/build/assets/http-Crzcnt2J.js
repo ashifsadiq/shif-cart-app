@@ -1,0 +1,1 @@
+import{a}from"./app-jYtbDyJ1.js";const n="/",o=a.create({baseURL:n,headers:{"Content-Type":"application/json",Accept:"application/json"},timeout:1e4});o.interceptors.request.use(async e=>e,e=>Promise.reject(e));const c=async(e,t,s)=>(console.table({method:"POST",url:e,data:t,config:s}),(await o.post(e,t,s)).data);export{c as a};
