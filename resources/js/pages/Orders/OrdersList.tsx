@@ -9,7 +9,6 @@ export default function OrdersList({ orders }) {
   const orderData = orders?.data ?? [];
   const meta = orders?.meta ?? {};
   const links = meta?.links ?? [];
-
   return (
     <UserLayout className="max-w-5xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Your Orders</h1>
@@ -85,6 +84,13 @@ export default function OrdersList({ orders }) {
                 key={idx}
                 href={link.url}
                 preserveScroll
+                onClick={() => {
+                  window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: "smooth"
+                  });
+                }}
                 className={`px-3 py-1 rounded border text-sm
                   ${link.active ? 'bg-primary text-white border-primary' : 'border-border hover:bg-accent'}
                 `}

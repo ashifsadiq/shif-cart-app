@@ -44,7 +44,6 @@ class OrderController extends Controller
                 ->withCount('items')
                 ->firstOrFail();
         }
-
         // Paginate the items with product
         $items = $order->items()->with('product')->paginate(10);
         if ($request->wantsJson()) {
@@ -63,14 +62,7 @@ class OrderController extends Controller
             ];
         }
         return inertia('Orders/OrderDetails', [
-            'order'      => [
-                'id'           => $order->id,
-                'order_number' => $order->order_number,
-                'status'       => $order->status,
-                'created_at'   => $order->created_at,
-                'items_count'  => $order->items_count,
-                // ...other order fields
-            ],
+            'order' => new OrderDetailResource($order),
             'items'      => OrderIndexResource::collection($items->getCollection()),
             // Optional: Explicit pagination metadata
             'items_meta' => [

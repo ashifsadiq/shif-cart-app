@@ -1,13 +1,71 @@
 // resources/js/Pages/Order/Show.jsx
-import React from 'react';
-import { Link, router } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import UserLayout from '@/layouts/user-layout';
+import { cn } from '@/lib/utils';
 
 export default function OrderShow({ order, items, items_meta }) {
+    // Function to extract clean label from pagination links
+    const getLinkLabel = (label) => {
+        return label
+            .replace('&laquo;', '«')
+            .replace('&raquo;', '»')
+            .replace(/(<([^>]+)>)/gi, '');
+    };
+    // State for current page items and pagination
+    const [currentPage, setCurrentPage] = useState(items_meta.current_page || 1);
+    const [loading, setLoading] = useState(false);
+
+    // Get the order show path from Inertia.js page props (e.g., /orders/:id)
+    const { url } = usePage();
+    const orderShowPath = url.split('?')[0]; // Remove query params
+
+    // Fetch items for a specific page
+    const fetchItems = async (page) => {
+        if (loading) return; // Prevent duplicate requests
+        setLoading(true);
+        try {
+            await router.get(`${orderShowPath}`, { page }, {
+                preserveState: true,
+                preserveScroll: true,
+                onFinish: () => {
+                    window.scrollTo({
+                        top: 0,
+                        left: 0,
+                        behavior: "smooth"
+                    });
+                    setLoading(false)
+                },
+            });
+        } catch (e) {
+            setLoading(false);
+        }
+    };
+    const goToPage = (page) => {
+        if (page < 1 || page > items_meta.last_page || page === currentPage) return;
+        setCurrentPage(page);
+        fetchItems(page);
+    };
+    const PageButton = ({ page, isActive, label = null }) => (
+        <button
+            onClick={() => goToPage(page)}
+            disabled={isActive || loading}
+            className={cn(
+                'w-10 h-10 flex items-center justify-center rounded border',
+                'disabled:opacity-50 disabled:cursor-not-allowed',
+                isActive
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'border-border hover:bg-accent',
+            )}
+            aria-current={isActive ? 'page' : undefined}
+        >
+            {label || page}
+        </button>
+    );
+    // Only show pagination if there are multiple pages
     return (
         <UserLayout className="max-w-4xl mx-auto px-4 py-8">
-            {/* Order Header */}
             <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                 <div>
                     <h1 className="text-2xl font-bold">
@@ -17,21 +75,20 @@ export default function OrderShow({ order, items, items_meta }) {
                         <span>Status: <span className="font-semibold capitalize">{order.status}</span></span>
                         <span>Items: <span className="font-semibold">{order.items_count}</span></span>
                         <span>Placed: <span>{(new Date(order.created_at)).toLocaleString()}</span></span>
+                        <span>Amount: <span className="font-semibold">{order.amount}</span></span>
                     </div>
                 </div>
-                <Button onClick={()=>router.visit('/orders')} href="/orders" variant="outline" size="sm">
+                <Button onClick={() => router.visit('/orders')} href="/orders" variant="outline" size="sm">
                     Back to Orders
                 </Button>
             </div>
-
             <hr className="mb-6" />
-
             {/* Order Items List */}
             <div className="space-y-6">
                 {items.data.map(({ id, product, quantity, price }) => (
                     <div
-                        className="flex flex-col sm:flex-row gap-4 bg-white/80 border border-border rounded-lg p-4 shadow-sm"
                         key={id}
+                        className="flex flex-col sm:flex-row gap-4 bg-white/80 border border-border rounded-lg p-4 shadow-sm"
                     >
                         <img
                             src={product.image}
@@ -65,39 +122,16 @@ export default function OrderShow({ order, items, items_meta }) {
                         </div>
                     </div>
                 ))}
-            </div>
-
-            {/* Pagination */}
-            {items.links && items.links.length > 1 && (
-                <div className="mt-8 flex justify-center">
-                    {items.links.map((link, idx) => {
-                        // Remove HTML from label, simple rendering
-                        const label = link.label.replace(/(<([^>]+)>)/gi, '');
-                        if (!link.url) {
-                            return (
-                                <span
-                                    key={idx}
-                                    className="px-3 py-1 rounded text-muted-foreground"
-                                    aria-disabled="true"
-                                    dangerouslySetInnerHTML={{ __html: label }}
-                                />
-                            );
-                        }
-                        return (
-                            <Link
-                                key={idx}
-                                href={link.url}
-                                preserveScroll
-                                className={`px-3 py-1 rounded border ${link.active
-                                        ? 'bg-primary text-primary-foreground border-primary'
-                                        : 'border-border hover:bg-accent'
-                                    }`}
-                                    dangerouslySetInnerHTML={{ __html: label }}
-                            />
-                        );
-                    })}
+                <div className="flex flex-wrap gap-1 justify-center">
+                    {Array.from({ length: items_meta.last_page }, (_, i) => i + 1).map((page) => (
+                        <PageButton
+                            key={page}
+                            page={page}
+                            isActive={page === currentPage}
+                        />
+                    ))}
                 </div>
-            )}
+            </div>
         </UserLayout>
     );
 }

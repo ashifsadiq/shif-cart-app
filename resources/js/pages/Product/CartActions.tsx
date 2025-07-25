@@ -42,7 +42,7 @@ export const CartActions: React.FC<Omit<CartActionProps, 'product'>> = ({
     buttonVariant = 'default',
     className,
     user,
-    minQty=1,
+    minQty = 1,
     ...rest
 }) => {
     const hasUser = user?.user != null;
@@ -156,7 +156,7 @@ export const CartActions: React.FC<Omit<CartActionProps, 'product'>> = ({
                     {isLoading ? 'Adding...' : 'Add to Cart'}
                 </Button>
             ) : (
-                !hasUser ? <p className="text-sm text-muted-foreground">Sign in to add to cart.</p>
+                !hasUser ? <Button onClick={() => router.get(route('login', { redirect: window.location.pathname + window.location.search }))} variant={"destructive"} className='cursor-pointer' >Sign in to add to cart</Button>
                     :
                     <p className="text-sm text-muted-foreground">This item is unavailable.</p>
             )}
